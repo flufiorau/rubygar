@@ -1,0 +1,289 @@
+* {
+    margin: 0;
+    padding: 0;
+    /*border: 0;*/
+    font-family: Arial;
+}
+
+html {
+    background: url(back_png.png) repeat-x;
+    background-attachment: fixed;
+}
+
+.container {
+    width: 950px;
+    margin: auto;
+    margin-top: 45px;
+}
+
+.addons {
+/*    display: none;*/
+}
+
+.fleft {
+    float: left;
+}
+
+.fright {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.hide {
+    display: none;
+}
+
+.lines {
+    border-right: 1px solid #e4bcbc;
+    border-left: 1px solid #e4bcbc;
+    width: 3px;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
+tr.completed {
+    background-color: #d3f6e5;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+table.todolist {
+    border-spacing: 0px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 2px 2px 18px 18px;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+table.todolist tr {}
+
+table.todolist th {
+    margin: auto;
+}
+
+.todoheading {
+    background: linear-gradient(to top, #355e9d, #527cbc);
+    border-color: #4a75b6;
+    height: 57px;
+    font-size: 1.2em;
+}
+
+.todoheading th {
+    padding: 6px;
+}
+
+.todonaming {
+    height: 52px;
+    font-size: 1.0em;
+    background-color: #d0d0d0;
+}
+
+.todolistitem {
+    background-color: #ffffff;
+    font-size: 1em;
+    color: #a3a3a3;
+}
+
+.todolistitem:hover {
+    background-color: #fcfed5;
+}
+
+.todolistitem td {
+    padding: 6px;
+}
+
+.white {
+    color: #ffffff;
+}
+
+.gray {
+    color: #a5a5a5/*#eeeeee*/
+    ;
+}
+
+.green {
+    color: #008000;
+}
+
+button:hover,
+i:hover {
+    cursor: pointer;
+}
+
+button.addTask,
+.form button,
+.deleteTaskModalContent button,
+.deleteTodoModalContent button {
+    border-top: 2px solid #bbbbbb;
+    background: linear-gradient(to top, #508768, #8ac0a3);
+    border: 1px solid #4d7f61;
+    width: 127px;
+    height: 37px;
+    border-radius: 0 6px 6px 0;
+    margin-right: 15px;
+}
+
+.form input {
+    font-size: 16px;
+}
+
+input.newTaskName {
+    border-top: 2px solid #bbbbbb;
+    width: 740px;
+    height: 33px;
+    border-radius: 2px 0 0 2px;
+    color: #a3a3a3;
+    font-size: 1em;
+}
+
+.fa {
+    padding: 9px;
+}
+
+.center {
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.inner-flex {
+    margin: auto;
+}
+
+.fa-caret-up {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.fa-caret-down {
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+.down-up {
+    line-height: 0.1;
+    width: 30px;
+}
+
+.addTodo {
+    background: linear-gradient(to top, #355e9d, #527cbc);
+    margin-top: 30px;
+    width: 250px;
+    height: 57px;
+    border: 1px solid #455ca7;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 0 rgba(0, 0, 0, .5), inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    font-size: 24px;
+    line-height: 1em;
+}
+
+.taskModal,
+.editTaskModal,
+.deleteTaskModal,
+.todoModal,
+.editTodoModal,
+.deleteTodoModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .5);
+    /*    display: grid;*/
+}
+
+.taskModalContainer,
+.editTaskModalContainer,
+.deleteTaskModalContainer,
+.todoModalContainer,
+.editTodoModalContainer,
+.deleteTodoModalContainer {
+    width: 700px;
+    background: #fff;
+    margin: auto;
+    margin-top: 100px
+}
+
+.taskModalHeading,
+.editTaskModalHeading,
+.deleteTaskModalHeading,
+.todoModalHeading,
+.editTodoModalHeading,
+.deleteTodoModalHeading {
+    padding: 9px;
+    background: linear-gradient(to top, #355e9d, #527cbc);
+    color: #fff;
+    /*height: 57px;*/
+    font-size: 1.2em;
+}
+
+.taskModalContent,
+.editTaskModalContent,
+.deleteTaskModalContent,
+.todoModalContent,
+.editTodoModalContent,
+.deleteTodoModalContent {
+    min-height: 100px;
+    padding: 10px;
+}
+
+.close {
+    background-color: red;
+    padding: 3px 9px;
+    font-size: 20px;
+    color: white;
+    border: none;
+}
+
+.form input[type=text] {
+    width: 98%;
+    margin: auto;
+    min-height: 50px;
+    margin-bottom: 10px;
+}
+
+.form p {
+    display: inline-block;
+}
+
+.form input[type=date],
+.form input[type=time] {
+    display: inline-block;
+    margin: auto;
+    min-height: 33px;
+}
+
+.form button {}
+
+p.successMessage {
+    background-color: #d8efc2;
+    color: #097133;
+    border-left: 5px solid #097133;
+    padding: 9px;
+    margin: 22px 0;
+}
+
+p.errorMessage {
+    background-color: #efcbc2;
+    color: #da1527;
+    border-left: 5px solid #da1527;
+    padding: 9px;
+    margin: 22px 0;
+}
+
+.deleteTaskModalContent h3,
+.taskModalContent h3,
+.deleteTodoModalContent h3,
+.todoModalContent h3 {
+    background: #fcfed5;
+}
