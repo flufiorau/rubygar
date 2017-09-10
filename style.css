@@ -10,6 +10,10 @@ html {
     background-attachment: fixed;
 }
 
+body {
+    background-color: unset;
+}
+
 .container {
     width: 950px;
     margin: auto;
@@ -187,6 +191,8 @@ input.newTaskName {
     line-height: 1em;
 }
 
+.signUpModal,
+.signInModal,
 .taskModal,
 .editTaskModal,
 .deleteTaskModal,
@@ -202,6 +208,8 @@ input.newTaskName {
     /*    display: grid;*/
 }
 
+.signUpModalContainer,
+.signInModalContainer,
 .taskModalContainer,
 .editTaskModalContainer,
 .deleteTaskModalContainer,
@@ -214,6 +222,8 @@ input.newTaskName {
     margin-top: 100px
 }
 
+.signUpModalHeading,
+.signInModalHeading,
 .taskModalHeading,
 .editTaskModalHeading,
 .deleteTaskModalHeading,
@@ -227,6 +237,8 @@ input.newTaskName {
     font-size: 1.2em;
 }
 
+.signUpModalContent,
+.signInModalContent,
 .taskModalContent,
 .editTaskModalContent,
 .deleteTaskModalContent,
@@ -245,7 +257,7 @@ input.newTaskName {
     border: none;
 }
 
-.form input[type=text] {
+.form input[type=text], .form input[type=email], .form input[type=password] {
     width: 98%;
     margin: auto;
     min-height: 50px;

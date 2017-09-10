@@ -12,17 +12,18 @@ var app = new Vue({
         showingTodoModal: false,
         showingEditTodoModal: false,
         showingDeleteTodoModal: false,
+        showingSignUpModal: false,
         showingSignInModal: false,
-        showingLogInModal: false,
         errorMessage: "",
         successMessage: "",
         addonsON: false,
-        autorizedUser: true,
+        autorizedUser: false,
         newUser: [],
+        user: [],
         todos: [],
         tasks: [],
-        newTask: { texttask: "", finaldate: "", todoid: "" },
-        newTodo: { todoname: "" },
+        newTask: {texttask: "", finaldate: "", todoid: ""},
+        newTodo: {todoname: ""},
         clickedTask: {},
         clickedTodo: {}
     },
@@ -55,12 +56,26 @@ var app = new Vue({
                 });
         },
 
-        saveUser: function(){
+        signUpNewUser: function () {
             var formData = app.toFormData(app.newUser);
 
-            axios.post("http://rg.usejs.top/api.php?action=createuser", formData)
+            axios.post("http://rg.usejs.top/api.php?action=signupuser", formData)
                 .then(function (response) {
-                    app.newUser = {username: "", password: ""};
+                    app.newUser = {email: "", password: "", login: ""};
+                    if (response.data.error) {
+                        app.errorMessage = response.data.message;
+                    } else {
+                        app.successMessage = response.data.message;
+                    }
+                });
+        },
+
+        signInUser: function () {
+            var formData = app.toFormData(app.user);
+
+            axios.post("http://rg.usejs.top/api.php?action=signinuser", formData)
+                .then(function (response) {
+                    app.newUser = {login: "", password: ""};
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
@@ -193,7 +208,6 @@ var app = new Vue({
             for (var key in obj) {
                 form_data.append(key, obj[key]);
             }
-            console.log(form_data);
             return form_data;
         },
         clearMessage: function () {

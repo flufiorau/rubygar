@@ -1,47 +1,72 @@
 <?php
 
 $conn = new mysqli("usejs.top", "semen574_user", "2017semen574_", "semen574_garrage");
-if ($conn->connect_error){
+if ($conn->connect_error) {
     die("Could not connect to database!");
+} else {
+    session_start();
 }
 
 $res = array('error' => false);
 
 $action = 'readtasks';
-if(isset($_GET['action'])){
+if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
+if ($action == 'signupuser') {
 
-if($action == 'createuser') {
+    $email = $_POST['email'];
+    $pass = $_POST['password'];
+    $login = $_POST['login'];
+    if (!isset($login)) {
+        $login = $email;
+    };
+    $password = password_hash($pass, PASSWORD_DEFAULT);
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-//	echo password_hash("rasmuslerdorf", PASSWORD_BCRYPT, $options)."\n";
-    $result = $conn->query("INSERT INTO `users` (`username`, `password`) VALUES ('$username', '$password')");
+    $result = $conn->query("INSERT INTO `users` (`email`, `password`, `login`) VALUES ('$email', '$password', '$login')");
     if ($result) {
-        $res['message'] = "user added successfully";
+        $res['message'] = $login . " sign up successfully";
+        logged_user($login);
     } else {
         $res['error'] = true;
-        $res['message'] = "Could not create user";
+        $res['message'] = "Could not sign up user " . $login;
     }
-} 
+}
+
+if ($action == 'signinuser') {
+
+    $login = $_POST['login'];
+    $password = $_POST['password'];
+
+    $result = $conn->query("SELECT * FROM `users` WHERE `login` = '$login'");
+    if ($result) {
+        $pswdhash = $result->fetch_assoc();
+        if (password_verify($password, $pswdhash["password"])) {
+            $res['message'] = "Welcome! " . $login . " sign in successfully";
+        }
+
+    } else {
+        $res['error'] = true;
+        $res['message'] = "Could not sign in user" . $login;
+    }
+}
 
 
 // todo actions start  ///////////////////////////////////////////////////////////
 //
-if($action == 'readtodos') {
+if ($action == 'readtodos') {
     $result = $conn->query("SELECT * FROM `todolists`");
     $todos = array();
 
-    while ($row = $result->fetch_assoc()){
+    while ($row = $result->fetch_assoc()) {
         array_push($todos, $row);
     }
 
     $res['todos'] = $todos;
 }
 
-if($action == 'createtodo') {
+if ($action == 'createtodo') {
 
     $todotext = $_POST['todoname'];
 
@@ -52,9 +77,9 @@ if($action == 'createtodo') {
         $res['error'] = true;
         $res['message'] = "Could not create todo";
     }
-} 
+}
 
-if($action == 'updatetodo') {
+if ($action == 'updatetodo') {
     $id = $_POST['id'];
     $todotext = $_POST['todoname'];
 
@@ -65,9 +90,9 @@ if($action == 'updatetodo') {
         $res['error'] = true;
         $res['message'] = "Could not update todo";
     }
-} 
+}
 
-if($action == 'deletetodo') {
+if ($action == 'deletetodo') {
     $id = $_POST['id'];
 
     $result = $conn->query("DELETE FROM `todolists` WHERE `id` = '$id'");
@@ -83,18 +108,18 @@ if($action == 'deletetodo') {
 
 // TASK actions start  ///////////////////////////////////////////////////////////
 //
-if($action == 'readtasks') {
+if ($action == 'readtasks') {
     $result = $conn->query("SELECT * FROM `todotasks`");
     $tasks = array();
 
-    while ($row = $result->fetch_assoc()){
+    while ($row = $result->fetch_assoc()) {
         array_push($tasks, $row);
     }
 
     $res['tasks'] = $tasks;
 }
 
-if($action == 'createtask') {
+if ($action == 'createtask') {
 
     $tasktext = $_POST['texttask'];
     $finaldate = $_POST['finaldate'];
@@ -107,9 +132,9 @@ if($action == 'createtask') {
         $res['error'] = true;
         $res['message'] = "Could not create task";
     }
-} 
+}
 
-if($action == 'updatetask') {
+if ($action == 'updatetask') {
     $id = $_POST['id'];
     $tasktext = $_POST['texttask'];
     $finaldate = $_POST['finaldate'];
@@ -122,14 +147,14 @@ if($action == 'updatetask') {
     }
 }
 
-if($action == 'completedtask') {
+if ($action == 'completedtask') {
     $id = $_POST['id'];
     $iscomplete = $_POST['iscomplete'];
-    if($iscomplete == 0) {
+    if ($iscomplete == 0) {
         $iscomplete = 1;
-        } else {
+    } else {
         $iscomplete = 0;
-        }
+    }
     $result = $conn->query("UPDATE `todotasks` SET `iscomplete` = '$iscomplete'  WHERE `id` = '$id'");
 
     if ($result) {
@@ -140,7 +165,7 @@ if($action == 'completedtask') {
     }
 }
 
-if($action == 'deletetask') {
+if ($action == 'deletetask') {
     $id = $_POST['id'];
 
     $result = $conn->query("DELETE FROM `todotasks` WHERE `id` = '$id'");
@@ -152,9 +177,11 @@ if($action == 'deletetask') {
     }
 }
 //
-// TASK actions start  ///////////////////////////////////////////////////////////
+// TASK actions end  ///////////////////////////////////////////////////////////
 
-
+function logged_user($login){
+    $_SESSION['logged_user'] = $login;
+}
 
 $conn->close();
 
