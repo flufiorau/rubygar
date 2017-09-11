@@ -14,6 +14,7 @@ var app = new Vue({
         showingDeleteTodoModal: false,
         showingSignUpModal: false,
         showingSignInModal: false,
+        showingSignOutModal: false,
         errorMessage: "",
         successMessage: "",
         addonsON: false,
@@ -28,30 +29,20 @@ var app = new Vue({
         clickedTodo: {}
     },
     mounted: function () {
-        this.getAllTodos();
+        this.areUserAutorized();
+        // this.getAllTodos();
         // this.getAllTasks();
     },
     methods: {
-        getAllTodos: function () {
-            axios.get("http://rg.usejs.top/api.php?action=readtodos")
+        areUserAutorized: function () {
+            axios.get("http://rg.usejs.top/api.php?action=idautorizeduser")
                 .then(function (response) {
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
-                        app.todos = response.data.todos;
-                    }
-                    app.getAllTasks();
-                });
-
-        },
-
-        getAllTasks: function () {
-            axios.get("http://rg.usejs.top/api.php?action=readtasks")
-                .then(function (response) {
-                    if (response.data.error) {
-                        app.errorMessage = response.data.message;
-                    } else {
-                        app.tasks = response.data.tasks;
+                        app.autorizedUser = true;
+                        app.user.login = response.data.login;
+                        app.getAllTodos();
                     }
                 });
         },
@@ -66,6 +57,8 @@ var app = new Vue({
                         app.errorMessage = response.data.message;
                     } else {
                         app.successMessage = response.data.message;
+                        app.autorizedUser = true;
+                        app.getAllTodos();
                     }
                 });
         },
@@ -80,6 +73,50 @@ var app = new Vue({
                         app.errorMessage = response.data.message;
                     } else {
                         app.successMessage = response.data.message;
+                        app.autorizedUser = true;
+                        app.getAllTodos();
+                    }
+                });
+        },
+
+        signOutUser: function () {
+            var formData = app.toFormData(app.user);
+
+            axios.post("http://rg.usejs.top/api.php?action=signoutuser", formData)
+                .then(function (response) {
+                    if (response.data.error) {
+                        app.errorMessage = response.data.message;
+                    } else {
+                        app.successMessage = response.data.message;
+                        app.autorizedUser = false;
+                        app.getAllTodos();
+                    }
+                });
+        },
+
+
+        getAllTodos: function () {
+            axios.get("http://rg.usejs.top/api.php?action=readtodos")
+                .then(function (response) {
+                    if (response.data.error) {
+                        app.errorMessage = response.data.message;
+                    } else {
+                        app.todos = response.data.todos;
+                    }
+                    app.getAllTasks();
+                });
+
+        }
+
+        ,
+
+        getAllTasks: function () {
+            axios.get("http://rg.usejs.top/api.php?action=readtasks")
+                .then(function (response) {
+                    if (response.data.error) {
+                        app.errorMessage = response.data.message;
+                    } else {
+                        app.tasks = response.data.tasks;
                     }
                 });
         },
@@ -96,7 +133,8 @@ var app = new Vue({
                         app.getAllTodos();
                     }
                 });
-        },
+        }
+        ,
 
         saveTask: function () {
             var formData = app.toFormData(app.newTask);
@@ -110,7 +148,8 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        },
+        }
+        ,
 
         updateTodo: function () {
 
@@ -127,7 +166,8 @@ var app = new Vue({
                         app.getAllTodos();
                     }
                 });
-        },
+        }
+        ,
 
         updateTask: function () {
 
@@ -144,7 +184,8 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        },
+        }
+        ,
 
         completedTask: function () {
             var formData = app.toFormData(app.clickedTask);
@@ -159,7 +200,8 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        },
+        }
+        ,
 
         deleteTodo: function () {
 
@@ -176,7 +218,8 @@ var app = new Vue({
                         app.getAllTodos();
                     }
                 });
-        },
+        }
+        ,
 
         deleteTask: function () {
 
@@ -193,15 +236,18 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        },
+        }
+        ,
 
         selectTodo: function (todo) {
             app.clickedTodo = todo;
-        },
+        }
+        ,
 
         selectTask: function (task) {
             app.clickedTask = task;
-        },
+        }
+        ,
 
         toFormData: function (obj) {
             var form_data = new FormData();
@@ -209,7 +255,8 @@ var app = new Vue({
                 form_data.append(key, obj[key]);
             }
             return form_data;
-        },
+        }
+        ,
         clearMessage: function () {
             app.errorMessage = "";
             app.successMessage = "";

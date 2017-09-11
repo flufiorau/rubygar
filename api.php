@@ -8,10 +8,24 @@ if ($conn->connect_error) {
 }
 
 $res = array('error' => false);
+if (isset($_SESSION['id_user'])) {
+    $signinuserid = $_SESSION['id_user'];
+} else {
+    $signinuserid = null;
+}
 
-$action = 'readtasks';
+$action = 'idautorizeduser';
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
+}
+
+if ($action == 'idautorizeduser') {
+    if (isset($_SESSION['logged_user'])) {
+        $res['login'] = $_SESSION['logged_user'];
+    } else {
+        $res['error'] = true;
+        $res['message'] = "Is not logged user";
+    }
 }
 
 if ($action == 'signupuser') {
@@ -28,6 +42,7 @@ if ($action == 'signupuser') {
     if ($result) {
         $res['message'] = $login . " sign up successfully";
         logged_user($login);
+
     } else {
         $res['error'] = true;
         $res['message'] = "Could not sign up user " . $login;
@@ -44,19 +59,24 @@ if ($action == 'signinuser') {
         $pswdhash = $result->fetch_assoc();
         if (password_verify($password, $pswdhash["password"])) {
             $res['message'] = "Welcome! " . $login . " sign in successfully";
+            logged_user($login);
         }
-
     } else {
         $res['error'] = true;
         $res['message'] = "Could not sign in user" . $login;
     }
 }
 
+if ($action == 'signoutuser') {
+    unset($_SESSION['logged_user']);
+    unset($_SESSION['id_user']);
+}
+
 
 // todo actions start  ///////////////////////////////////////////////////////////
 //
 if ($action == 'readtodos') {
-    $result = $conn->query("SELECT * FROM `todolists`");
+    $result = $conn->query("SELECT * FROM `todolists` WHERE `user_id`= '$signinuserid' ");
     $todos = array();
 
     while ($row = $result->fetch_assoc()) {
@@ -70,7 +90,7 @@ if ($action == 'createtodo') {
 
     $todotext = $_POST['todoname'];
 
-    $result = $conn->query("INSERT INTO `todolists` (`todoname`) VALUES ('$todotext')");
+    $result = $conn->query("INSERT INTO `todolists` (`todoname`, `user_id`) VALUES ('$todotext', '$signinuserid')");
     if ($result) {
         $res['message'] = "todo added successfully";
     } else {
@@ -109,7 +129,7 @@ if ($action == 'deletetodo') {
 // TASK actions start  ///////////////////////////////////////////////////////////
 //
 if ($action == 'readtasks') {
-    $result = $conn->query("SELECT * FROM `todotasks`");
+    $result = $conn->query("SELECT * FROM `todotasks` WHERE `user_id`='$signinuserid'");
     $tasks = array();
 
     while ($row = $result->fetch_assoc()) {
@@ -125,7 +145,7 @@ if ($action == 'createtask') {
     $finaldate = $_POST['finaldate'];
     $todoid = $_POST['todoid'];
 
-    $result = $conn->query("INSERT INTO `todotasks` (`texttask`, `finaldate`, `todoid`) VALUES ('$tasktext', '$finaldate', '$todoid')");
+    $result = $conn->query("INSERT INTO `todotasks` (`texttask`, `finaldate`, `todoid`, `user_id`) VALUES ('$tasktext', '$finaldate', '$todoid', '$signinuserid')");
     if ($result) {
         $res['message'] = "Task added successfully";
     } else {
@@ -179,8 +199,13 @@ if ($action == 'deletetask') {
 //
 // TASK actions end  ///////////////////////////////////////////////////////////
 
-function logged_user($login){
+function logged_user($login)
+{
     $_SESSION['logged_user'] = $login;
+    global $conn;
+    $query = $conn->query("SELECT * FROM `users` WHERE `login`='$login'");
+    $result = $query->fetch_assoc();
+    $_SESSION['id_user'] = $result['id'];
 }
 
 $conn->close();

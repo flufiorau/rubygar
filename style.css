@@ -193,6 +193,7 @@ input.newTaskName {
 
 .signUpModal,
 .signInModal,
+.signOutModal,
 .taskModal,
 .editTaskModal,
 .deleteTaskModal,
@@ -210,6 +211,7 @@ input.newTaskName {
 
 .signUpModalContainer,
 .signInModalContainer,
+.signOutModalContainer,
 .taskModalContainer,
 .editTaskModalContainer,
 .deleteTaskModalContainer,
@@ -224,6 +226,7 @@ input.newTaskName {
 
 .signUpModalHeading,
 .signInModalHeading,
+.signOutModalHeading,
 .taskModalHeading,
 .editTaskModalHeading,
 .deleteTaskModalHeading,
@@ -239,6 +242,7 @@ input.newTaskName {
 
 .signUpModalContent,
 .signInModalContent,
+.signOutModalContent,
 .taskModalContent,
 .editTaskModalContent,
 .deleteTaskModalContent,
