@@ -4,17 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple TODO List</title>
+
     <link rel="stylesheet" href="./bootstrap.min.css">
     <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./style.css">
-
 </head>
 
 <body>
-<h1 class="center">SIMPLE TODO LIST</h1>
-<h2 class="center">FROM RUBY GARAGE</h2>
+
 <div id="application">
-    <div class="container" v-if="!autorizedUser">
+    <button v-if="autorizedUser" class="btn btn-link fright" @click="showingSignOutModal = true;">Sign Out, {{user.login}}</button>
+    <div class="clear"></div>
+    <h1 class="center">SIMPLE TODO LIST</h1>
+    <h2 class="center">FROM RUBY GARAGE</h2>
+    <div class="infoMessages">
+        <p class="errorMessage" v-if="errorMessage"> {{errorMessage}} </p>
+        <p class="successMessage" v-if="successMessage"> {{successMessage}} </p>
+
+
+    </div>
+    <div v-if="!autorizedUser">
         <div class="center">
             <button class="btn btn-default" @click="showingSignUpModal = true;">Sign Up</button>
             <button class="btn btn-default" @click="showingSignInModal = true;">Sign In</button>
@@ -26,19 +35,19 @@
                     <button class="fright close" @click="showingSignUpModal = false;">x</button>
                     <div class="clear"></div>
                 </div>
-                <div class="signUpModalContent">
+                <div class="signUpModalContent center">
                     <div class="form form-group has-feedback">
                         <input v-model="newUser.email" class="fright newUserEmail" type="email" placeholder="your email typing here"> <br>
                         <input v-model="newUser.password" class="fright" type="password" placeholder="your password"> <br>
                         <input v-model="newUser.login" class="fright" type="text" placeholder="optionally / your login"> <br>
-                        <button @click="showingSignUpModal = false; signUpNewUser();">Sign Up</button>
+                        <button class="btn btn-primary" @click="showingSignUpModal = false; signUpNewUser();">Sign Up</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="signInModal" id="signInModal" v-if="showingSignInModal">
-            <div class="signInModalContainer">
+            <div class="signInModalContainer center">
                 <div class="signInModalHeading">
                     <p class="fleft">Sign in to your account</p>
                     <button class="fright close" @click="showingSignInModal = false;">x</button>
@@ -46,18 +55,18 @@
                 </div>
                 <div class="signInModalContent">
                     <div class="form"><input v-model="user.login" class="fright" type="text" placeholder="your username typing here"> <br>
-                        <input v-model="user.password" class="fright" type="text" placeholder="your password"> <br>
-                        <button @click="showingSignInModal = false; signInUser()">SignIn</button>
+                        <input v-model="user.password" class="fright" type="password" placeholder="your password"> <br>
+                        <button class="btn btn-primary" @click="showingSignInModal = false; signInUser()">SignIn</button>
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="container" v-else>
-        <button class="btn btn-default fright" @click="showingSignOutModal = true;">Sign Out</button>
+    <div v-else>
+
         <div class="signOutModal" id="signOutModal" v-if="showingSignOutModal">
-            <div class="todoModalContainer">
+            <div class="signOutModalContainer center">
                 <div class="signOutModalHeading">
                     <p class="fleft">You will sign out</p>
                     <button class="fright close" @click="showingSignOutModal = false;">x</button>
@@ -65,15 +74,14 @@
                 </div>
                 <div class="signOutModalContent">
                     <div class="form form-group has-feedback">
-                        <button @click="showingSignOutModal = false;">Cancel</button>
-                        <button @click="showingSignOutModal = false; signOutUser();">Sign Out</button>
+                        <button class="btn btn-warning" @click="showingSignOutModal = false;">Cancel</button>
+                        <button class="btn btn-success" @click="showingSignOutModal = false; signOutUser();">Sign Out</button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="addons" v-if="addonsON">
-            <p class="errorMessage" v-if="errorMessage"> {{errorMessage}} </p>
-            <p class="successMessage" v-if="successMessage"> {{successMessage}} </p>
+
             <!-- start modal blocks for TODOs actions -->
             <div class="todoModal" id="todoModal" v-if="showingTodoModal">
                 <div class="todoModalContainer">
@@ -82,10 +90,10 @@
                         <button class="fright close" @click="showingTodoModal = false;">x</button>
                         <div class="clear"></div>
                     </div>
-                    <div class="todoModalContent">
+                    <div class="todoModalContent center">
                         <div class="form"><input v-model="newTodo.todoname" class="fright newTodoName" type="text"
                                                  placeholder="Start typing here to create a todo..."> <br>
-                            <button @click="showingTodoModal = false; saveTodo()">Save</button>
+                            <button class="btn btn-primary" @click="showingTodoModal = false; saveTodo()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -97,9 +105,9 @@
                         <button class="fright close" @click="showingEditTodoModal = false;">x</button>
                         <div class="clear"></div>
                     </div>
-                    <div class="editTodoModalContent">
+                    <div class="editTodoModalContent center">
                         <div class="form"><input type="text" v-model="clickedTodo.todoname"/>
-                            <button @click="showingEditTodoModal = false; updateTodo()">Update</button>
+                            <button class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update</button>
                         </div>
                     </div>
                 </div>
@@ -111,11 +119,11 @@
                         <button class="fright close" @click="showingDeleteTodoModal = false;">x</button>
                         <div class="clear"></div>
                     </div>
-                    <div class="deleteTodoModalContent">
+                    <div class="deleteTodoModalContent center">
                         <p class="center">You will delete this todo:</p>
                         <h3>{{clickedTodo.todoname}}</h3><br>
                         <p class="fleft">Are you sure?</p>
-                        <button class="fright" @click="showingDeleteTodoModal = false; deleteTodo()">Delete</button>
+                        <button class="btn btn-primary" @click="showingDeleteTodoModal = false; deleteTodo()">Delete</button>
                     </div>
                 </div>
             </div>
@@ -134,7 +142,7 @@
                             <p>Select finish day for task</p> <input type="date" placeholder="YYYY-MM-YY"
                                                                      v-model="newTask.finaldate">
                             <div class="hide"> {{ newTask.todoid=clickedTodo.id }}</div>
-                            <button @click="showingTaskModal = false; saveTask()">Save</button>
+                            <button class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -149,7 +157,7 @@
                     <div class="editTaskModalContent">
                         <div class="form"><input type="text" v-model="clickedTask.texttask"/>
                             <p>Finish day for editTask</p> <input type="date" v-model="clickedTask.finaldate">
-                            <button @click="showingEditTaskModal = false; updateTask()">Update</button>
+                            <button class="btn btn-primary" @click="showingEditTaskModal = false; updateTask()">Update</button>
                         </div>
                     </div>
                 </div>
@@ -165,7 +173,7 @@
                         <p class="center">You will delete this task:</p>
                         <h3>{{clickedTask.texttask}}</h3><br>
                         <p class="fleft">Are you sure?</p>
-                        <button class="fright" @click="showingDeleteTaskModal = false; deleteTask()">Delete</button>
+                        <button class="btn btn-primary" @click="showingDeleteTaskModal = false; deleteTask()">Delete</button>
                     </div>
                 </div>
             </div>

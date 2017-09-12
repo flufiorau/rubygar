@@ -53,13 +53,16 @@ if ($action == 'signinuser') {
 
     $login = $_POST['login'];
     $password = $_POST['password'];
-
     $result = $conn->query("SELECT * FROM `users` WHERE `login` = '$login'");
     if ($result) {
-        $pswdhash = $result->fetch_assoc();
-        if (password_verify($password, $pswdhash["password"])) {
-            $res['message'] = "Welcome! " . $login . " sign in successfully";
+        $arr = $result->fetch_assoc();
+        if (password_verify($password, $arr["password"])) {
+            $res['message'] = "Sign in was successfully. Welcome, " . $login . "";
+            $res['autorized'] = true;
             logged_user($login);
+        } else {
+            $res['message'] = "Login or password was wrong";
+            $res['autorized'] = false;
         }
     } else {
         $res['error'] = true;
@@ -68,6 +71,8 @@ if ($action == 'signinuser') {
 }
 
 if ($action == 'signoutuser') {
+    $login = $_SESSION['logged_user'];
+    $res['message'] = "Bye, " . $login. ". See you";
     unset($_SESSION['logged_user']);
     unset($_SESSION['id_user']);
 }

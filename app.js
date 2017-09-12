@@ -30,27 +30,36 @@ var app = new Vue({
     },
     mounted: function () {
         this.areUserAutorized();
-        // this.getAllTodos();
-        // this.getAllTasks();
     },
     methods: {
+        clearMessages: function () {
+            setTimeout(function () {
+                app.errorMessage = "";
+                app.successMessage = "";
+            }, 1200);
+        },
+
         areUserAutorized: function () {
-            axios.get("http://rg.usejs.top/api.php?action=idautorizeduser")
+
+            axios.get("https://rg.usejs.top/api.php?action=idautorizeduser")
                 .then(function (response) {
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
+                        app.clearMessages();
                     } else {
                         app.autorizedUser = true;
                         app.user.login = response.data.login;
                         app.getAllTodos();
                     }
+
                 });
+
         },
 
         signUpNewUser: function () {
             var formData = app.toFormData(app.newUser);
 
-            axios.post("http://rg.usejs.top/api.php?action=signupuser", formData)
+            axios.post("https://rg.usejs.top/api.php?action=signupuser", formData)
                 .then(function (response) {
                     app.newUser = {email: "", password: "", login: ""};
                     if (response.data.error) {
@@ -60,29 +69,37 @@ var app = new Vue({
                         app.autorizedUser = true;
                         app.getAllTodos();
                     }
+
                 });
         },
 
         signInUser: function () {
             var formData = app.toFormData(app.user);
 
-            axios.post("http://rg.usejs.top/api.php?action=signinuser", formData)
+            axios.post("https://rg.usejs.top/api.php?action=signinuser", formData)
                 .then(function (response) {
                     app.newUser = {login: "", password: ""};
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
-                        app.successMessage = response.data.message;
-                        app.autorizedUser = true;
-                        app.getAllTodos();
+                        if (response.data.autorized) {
+                            app.successMessage = response.data.message;
+                            app.autorizedUser = true;
+                            app.getAllTodos();
+                        } else {
+                            app.autorizedUser = false;
+                            app.errorMessage = response.data.message;
+                        }
+
                     }
+
                 });
         },
 
         signOutUser: function () {
             var formData = app.toFormData(app.user);
 
-            axios.post("http://rg.usejs.top/api.php?action=signoutuser", formData)
+            axios.post("https://rg.usejs.top/api.php?action=signoutuser", formData)
                 .then(function (response) {
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
@@ -91,27 +108,26 @@ var app = new Vue({
                         app.autorizedUser = false;
                         app.getAllTodos();
                     }
+
                 });
         },
 
 
         getAllTodos: function () {
-            axios.get("http://rg.usejs.top/api.php?action=readtodos")
+            axios.get("https://rg.usejs.top/api.php?action=readtodos")
                 .then(function (response) {
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
+                        app.clearMessages();
                         app.todos = response.data.todos;
+                        app.getAllTasks();
                     }
-                    app.getAllTasks();
                 });
-
-        }
-
-        ,
+        },
 
         getAllTasks: function () {
-            axios.get("http://rg.usejs.top/api.php?action=readtasks")
+            axios.get("https://rg.usejs.top/api.php?action=readtasks")
                 .then(function (response) {
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
@@ -124,7 +140,7 @@ var app = new Vue({
         saveTodo: function () {
             var formData = app.toFormData(app.newTodo);
 
-            axios.post("http://rg.usejs.top/api.php?action=createtodo", formData)
+            axios.post("https://rg.usejs.top/api.php?action=createtodo", formData)
                 .then(function (response) {
                     app.newTask = {todoname: ""};
                     if (response.data.error) {
@@ -139,7 +155,7 @@ var app = new Vue({
         saveTask: function () {
             var formData = app.toFormData(app.newTask);
 
-            axios.post("http://rg.usejs.top/api.php?action=createtask", formData)
+            axios.post("https://rg.usejs.top/api.php?action=createtask", formData)
                 .then(function (response) {
                     app.newTask = {texttask: "", finaldate: "", todoid: ""};
                     if (response.data.error) {
@@ -155,7 +171,7 @@ var app = new Vue({
 
             var formData = app.toFormData(app.clickedTodo);
 
-            axios.post("http://rg.usejs.top/api.php?action=updatetodo", formData)
+            axios.post("https://rg.usejs.top/api.php?action=updatetodo", formData)
                 .then(function (response) {
 
                     app.clickedTodo = {todoname: ""};
@@ -173,7 +189,7 @@ var app = new Vue({
 
             var formData = app.toFormData(app.clickedTask);
 
-            axios.post("http://rg.usejs.top/api.php?action=updatetask", formData)
+            axios.post("https://rg.usejs.top/api.php?action=updatetask", formData)
                 .then(function (response) {
 
                     app.clickedTask = {texttask: "", finaldate: ""};
@@ -190,7 +206,7 @@ var app = new Vue({
         completedTask: function () {
             var formData = app.toFormData(app.clickedTask);
 
-            axios.post("http://rg.usejs.top/api.php?action=completedtask", formData)
+            axios.post("https://rg.usejs.top/api.php?action=completedtask", formData)
                 .then(function (response) {
 
                     if (response.data.error) {
@@ -207,7 +223,7 @@ var app = new Vue({
 
             var formData = app.toFormData(app.clickedTodo);
 
-            axios.post("http://rg.usejs.top/api.php?action=deletetodo", formData)
+            axios.post("https://rg.usejs.top/api.php?action=deletetodo", formData)
                 .then(function (response) {
 
                     app.clickedTodo = {};
@@ -225,7 +241,7 @@ var app = new Vue({
 
             var formData = app.toFormData(app.clickedTask);
 
-            axios.post("http://rg.usejs.top/api.php?action=deletetask", formData)
+            axios.post("https://rg.usejs.top/api.php?action=deletetask", formData)
                 .then(function (response) {
 
                     app.clickedTask = {};
