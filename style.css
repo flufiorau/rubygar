@@ -66,7 +66,7 @@ table.todolist {
     border-spacing: 0px;
     width: 100%;
     background-color: #fff;
-    border-radius: 2px 2px 18px 18px;
+    border-radius: 2px 2px 18px 18px !important;
     padding-bottom: 20px;
     margin-bottom: 40px;
 }
@@ -158,7 +158,7 @@ button.notAddTask {
     font-size: 16px;
 }
 
-input.newTaskName {
+input.thisTaskName {
     border-top: 2px solid #bbbbbb;
     width: 740px;
     height: 37px;
@@ -305,7 +305,7 @@ input {
 .infoMessages {
     height: 50px;
     width: 360px;
-    margin: 10px auto;
+    margin: 22px auto;
 }
 
 p.successMessage {

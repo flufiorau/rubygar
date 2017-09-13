@@ -4,50 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple TODO List</title>
-
+    <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="./bootstrap.min.css">
     <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="//jqueryui.com/resources/demos/style.css">
     <style>
-        #sortable {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            width: 60%;
-        }
-
-        #sortable li {
-            margin: 0 3px 3px 3px;
-            padding: 0.4em;
-            padding-left: 1.5em;
-            font-size: 1.4em;
-            height: 18px;
-        }
-
-        #sortable li span {
-            position: absolute;
-            margin-left: -1.3em;
-        }
+        #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+        #sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; height: 1.5em; }
+        html>body #sortable li { height: 1.5em; line-height: 1.2em; }
+        .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
     </style>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(function () {
-            $("#sortable").sortable();
-            $("#sortable").disableSelection();
-        });
+        $( function() {
+            $( "#sortable" ).sortable({
+                placeholder: "ui-state-highlight"
+            });
+            $( "#sortable" ).disableSelection();
+        } );
     </script>
 </head>
 
 <body>
 
 <div id="application">
-    <button v-if="autorizedUser" class="btn btn-link fright" @click="showingSignOutModal = true;">Sign Out, {{user.login}}</button>
+    <button v-if="autorizedUser" class="btn fright fa-2x" @click="showingSignOutModal = true;">Sign Out, {{user.login}}</button>
     <div class="clear"></div>
-    <h1 class="center">SIMPLE TODO LIST</h1>
-    <h2 class="center">FROM RUBY GARAGE</h2>
+
     <div class="infoMessages">
         <p class="errorMessage" v-if="errorMessage"> {{errorMessage}} </p>
         <p class="successMessage" v-if="successMessage"> {{successMessage}} </p>
@@ -56,6 +42,8 @@
     </div>
     <div v-if="!autorizedUser">
         <div class="center">
+            <h1 class="center">SIMPLE TODO LIST</h1>
+            <h2 class="center">FROM RUBY GARAGE</h2>
             <button class="btn btn-default" @click="showingSignUpModal = true;">Sign Up</button>
             <button class="btn btn-default" @click="showingSignInModal = true;">Sign In</button>
         </div>
@@ -132,10 +120,10 @@
                     </div>
                     <div class="todoModalContent center">
                         <div class="form">
-                            <input class="newTodoName"
+                            <input class="thisTodoName"
                                    v-on:keyup="validateTextTodo()"
                                    v-on:keyup.enter="validateTextTodo('save')"
-                                   v-model="newTodo.todoname" class="fright newTodoName" type="text"
+                                   v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
                                    placeholder="Type here to create a todo (min 3 symbols)">
                             <br>
                             <button v-if="textIsValidated" class="btn btn-primary" @click="validateTextTodo('save')">Save</button>
@@ -152,8 +140,13 @@
                         <div class="clear"></div>
                     </div>
                     <div class="editTodoModalContent center">
-                        <div class="form"><input v-on:keyup.enter="showingEditTodoModal = false; updateTodo()" type="text" v-model="clickedTodo.todoname"/>
-                            <button class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update</button>
+                        <div class="form">
+                            <input v-on:keyup="validateTextTodo()"
+                                   v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
+                            <button v-if="textIsValidated"
+                                    class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update</button>
+                            <button v-else
+                                    class="btn btn-default" >Update</button>
                         </div>
                     </div>
                 </div>
@@ -184,11 +177,11 @@
                     </div>
                     <div class="taskModalContent center">
                         <div class="form">
-                            <h3>{{newTask.texttask}}</h3><br>
+                            <h3>{{thisTask.texttask}}</h3><br>
                             <p>Select finish day for task</p>
                             <input id="deadline" type="date" placeholder="YYYY-MM-YY"
-                                   v-on:change="isDeadline()" v-model="newTask.finaldate">
-                            <div class="hide"> {{ newTask.todoid=clickedTodo.id }}</div>
+                                   v-on:change="isDeadline()" v-model="thisTask.finaldate">
+                            <div class="hide"> {{ thisTask.todoid=clickedTodo.id }}</div>
                             <button v-if="dataSelected" class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save</button>
                             <button v-else class="btn btn-default">Save</button>
                         </div>
@@ -204,12 +197,22 @@
                     </div>
                     <div class="editTaskModalContent">
                         <div class="form">
-                            <input type="text"
-                                   v-on:keyup.enter="showingEditTaskModal = false; updateTask()" v-model="editingTask.texttask"/>
+                            <input v-on:keyup="validateTextTask()"
+                                   v-on:change="validateTextTask()"
+                                   v-on:keyup.enter="validateTextTask('update')"
+                                   v-model="editingTask.texttask" type="text"/>
                             <p>Finish day for editTask</p>
-                            <input type="date" v-model="clickedTask.finaldate"
-                                   v-on:keyup.enter="showingEditTaskModal = false; updateTask()">
-                            <button class="btn btn-primary" @click="showingEditTaskModal = false; updateTask()">Update</button>
+                            <input v-on:change="dateIsChanged = true"
+                                   v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
+                                   v-model="editingTask.finaldate" type="date" >
+                            <button v-if="textIsValidated"
+                                    class="btn btn-primary"
+                                    @click="showingEditTaskModal = false; updateTask()">Update</button>
+                            <button v-else-if="dateIsChanged"
+                                    class="btn btn-primary"
+                                    @click="showingEditTaskModal = false; updateTask()">Update</button>
+                            <button v-else
+                                    class="btn btn-default">Update</button>
                         </div>
                     </div>
                 </div>
@@ -231,7 +234,7 @@
             </div>
             <!--   end modal blocks for TASKs actions -->
         </div>
-        <table class="todolist" v-for="todo in todos">
+        <table class="todolist ui-sortable" v-for="todo in todos" id="sortable">
             <tr class="todoheading">
                 <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
                 <th></th>
@@ -249,7 +252,10 @@
             <tr class="todonaming">
                 <th><i class="fa fa-plus green fa-2x" aria-hidden="true"></i></th>
                 <th></th>
-                <td><input v-on:keyup="validateTextTask()" v-on:keyup.enter="showingTaskModal = true; selectTodo(todo);" v-model="newTask.texttask" class="fright newTaskName" id="newTaskName" type="text"
+                <td>
+                    <input v-on:keyup="validateTextTask()" 
+                           v-on:keyup.enter="showingTaskModal = true; selectTodo(todo);" 
+                           v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
                            placeholder="Type here to create a task (min 3 symbols)"></td>
                 <td>
                     <button v-if="textIsValidated" class="fleft white addTask" @click="showingTaskModal = true; selectTodo(todo);">Add task
@@ -261,12 +267,13 @@
             </tr>
 
 
-            <tr v-bind:class="{ completed: task.iscomplete == 1 }" class="todolistitem"
+            <tr v-bind:class="{ completed: task.iscomplete == 1 }" class="form todolistitem "
+
                 v-for="task in tasks"
                 v-if="todo.id==task.todoid">
-                <th>
-                    <div v-if="task.iscomplete == 1"><input type="checkbox" checked
-                                                            v-on:click="selectTask(task);completedTask()"></div>
+                <th class="center">
+                    <div v-if="task.iscomplete == 1">
+                        <input type="checkbox" checked v-on:click="selectTask(task);completedTask()"></div>
                     <div v-else>
                         <input type="checkbox" v-on:click="selectTask(task);completedTask()"></div>
                 </th>
@@ -276,8 +283,7 @@
                     <h3>{{task.texttask}}</h3>
                 </td>
                 <td class="flex center">
-                    <div class="inner-flex down-up"><i class="fa fa-caret-up" aria-hidden="true"></i>
-                        <p>—</p><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                    <div class="inner-flex down-up ui-state-default ui-sortable-handle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
                     <p class="inner-flex"> | </p> <i class="fa fa-pencil inner-flex" aria-hidden="true" @click="showingEditTaskModal = true; selectTask(task)"></i>
                     <p class="inner-flex"> | </p> <i class="fa fa-trash inner-flex" aria-hidden="true" @click="showingDeleteTaskModal = true; selectTask(task)"></i></td>
             </tr>

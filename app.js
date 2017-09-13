@@ -28,11 +28,12 @@ var app = new Vue({
         user: [],
         todos: [],
         tasks: [],
-        newTask: {texttask: "", finaldate: "", todoid: ""},
-        newTodo: {todoname: ""},
+        thisTask: {texttask: "", finaldate: "", todoid: ""},
+        thisTodo: {todoname: ""},
         clickedTask: {},
         editingTask: {},
-        clickedTodo: {}
+        clickedTodo: {},
+        dateIsChanged: false
     },
     mounted: function () {
         this.areUserAutorized();
@@ -44,45 +45,62 @@ var app = new Vue({
                 app.errorMessage = "";
                 app.successMessage = "";
                 app.textIsValidated = false;
-            }, 1200);
+            }, 900);
         },
 
         isDeadline: function () {
-            if (app.newTask.finaldate != "") {
+            if (app.thisTask.finaldate != "") {
                 app.dataSelected = true;
             }
         },
 
         validateTextTodo: function (action) {
-
-            if (app.newTodo.todoname == " ") {
-                return app.newTodo.todoname = "";
+            if (app.thisTodo.todoname == " ") {
+                return app.thisTodo.todoname = "";
             }
 
-            temp = app.newTodo.todoname;
+            temp = app.thisTodo.todoname;
 
             if (temp.length >= 3) {
                 app.textIsValidated = true;
-                console.log('hereNow')
                 if (action == 'save') {
                     app.showingTodoModal = false;
                     app.saveTodo();
+                } else if (action == 'update') {
+                    app.showingEditTodoModal = false;
+                    app.updateTodo();
                 }
+
             } else {
                 app.textIsValidated = false;
                 temp = "";
             }
         },
 
-        validateTextTask: function () {
-            if (app.newTask.texttask == " ") {
-                return app.newTask.texttask = "";
+        validateTextTask: function (action) {
+            if (app.thisTask.texttask == " ") {
+
+                return app.thisTask.texttask = "";
+            }
+            if (app.editingTask.texttask == " ") {
+
+                return app.editingTask.texttask = "";
             }
 
-            temp = app.newTask.texttask;
+            if (app.thisTask.texttask != "") {
+                temp = app.thisTask.texttask;
+            } else if (app.editingTask.texttask != "") {
+                temp = app.editingTask.texttask;
+            } else {
+                app.textIsValidated = false;
+            }
 
             if (temp.length >= 3) {
                 app.textIsValidated = true;
+                if (action == 'update') {
+                    app.showingEditTaskModal = false;
+                    app.updateTask();
+                }
             } else {
                 app.textIsValidated = false;
                 temp = "";
@@ -226,11 +244,11 @@ var app = new Vue({
         ,
 
         saveTodo: function () {
-            var formData = app.toFormData(app.newTodo);
+            var formData = app.toFormData(app.thisTodo);
 
             axios.post("https://rg.usejs.top/api.php?action=createtodo", formData)
                 .then(function (response) {
-                    app.newTask = {todoname: ""};
+                    app.thisTask = {todoname: ""};
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
@@ -241,11 +259,11 @@ var app = new Vue({
         ,
 
         saveTask: function () {
-            var formData = app.toFormData(app.newTask);
+            var formData = app.toFormData(app.thisTask);
 
             axios.post("https://rg.usejs.top/api.php?action=createtask", formData)
                 .then(function (response) {
-                    app.newTask = {texttask: "", finaldate: "", todoid: ""};
+                    app.thisTask = {texttask: "", finaldate: "", todoid: ""};
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
@@ -259,7 +277,7 @@ var app = new Vue({
 
         updateTodo: function () {
 
-            var formData = app.toFormData(app.clickedTodo);
+            var formData = app.toFormData(app.thisTodo);
 
             axios.post("https://rg.usejs.top/api.php?action=updatetodo", formData)
                 .then(function (response) {
@@ -277,8 +295,7 @@ var app = new Vue({
 
         updateTask: function () {
 
-            var formData = app.toFormData(app.clickedTask);
-
+            var formData = app.toFormData(app.editingTask);
             axios.post("https://rg.usejs.top/api.php?action=updatetask", formData)
                 .then(function (response) {
 
@@ -290,8 +307,7 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        }
-        ,
+        },
 
         completedTask: function () {
             var formData = app.toFormData(app.clickedTask);
@@ -306,8 +322,7 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        }
-        ,
+        },
 
         deleteTodo: function () {
 
@@ -342,19 +357,17 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        }
-        ,
+        },
 
         selectTodo: function (todo) {
             app.clickedTodo = todo;
-        }
-        ,
+            app.thisTodo = Object.assign({}, todo);
+        },
 
         selectTask: function (task) {
             app.clickedTask = task;
-            app.editingTask = app.clickedTask;
-        }
-        ,
+            app.editingTask = Object.assign({}, task);
+        },
 
         toFormData: function (obj) {
             var form_data = new FormData();
