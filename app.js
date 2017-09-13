@@ -2,8 +2,9 @@
  * Created by Zelenskiy.s on 29.08.2017.
  */
 
-
+var temp = new String();
 var app = new Vue({
+
     el: "#application",
     data: {
         showingTaskModal: false,
@@ -17,26 +18,109 @@ var app = new Vue({
         showingSignOutModal: false,
         errorMessage: "",
         successMessage: "",
+        textIsValidated: false,
+        userValidated: false,
+        titleSignUp: 'error data',
+        dataSelected: false,
         addonsON: false,
         autorizedUser: false,
-        newUser: [],
+        newUser: {login: "", password: ""},
         user: [],
         todos: [],
         tasks: [],
         newTask: {texttask: "", finaldate: "", todoid: ""},
         newTodo: {todoname: ""},
         clickedTask: {},
+        editingTask: {},
         clickedTodo: {}
     },
     mounted: function () {
         this.areUserAutorized();
+
     },
     methods: {
         clearMessages: function () {
             setTimeout(function () {
                 app.errorMessage = "";
                 app.successMessage = "";
+                app.textIsValidated = false;
             }, 1200);
+        },
+
+        isDeadline: function () {
+            if (app.newTask.finaldate != "") {
+                app.dataSelected = true;
+            }
+        },
+
+        validateTextTodo: function (action) {
+
+            if (app.newTodo.todoname == " ") {
+                return app.newTodo.todoname = "";
+            }
+
+            temp = app.newTodo.todoname;
+
+            if (temp.length >= 3) {
+                app.textIsValidated = true;
+                console.log('hereNow')
+                if (action == 'save') {
+                    app.showingTodoModal = false;
+                    app.saveTodo();
+                }
+            } else {
+                app.textIsValidated = false;
+                temp = "";
+            }
+        },
+
+        validateTextTask: function () {
+            if (app.newTask.texttask == " ") {
+                return app.newTask.texttask = "";
+            }
+
+            temp = app.newTask.texttask;
+
+            if (temp.length >= 3) {
+                app.textIsValidated = true;
+            } else {
+                app.textIsValidated = false;
+                temp = "";
+            }
+        },
+
+        validateNewUser: function (action) {
+            temp = app.newUser.login;
+            if (app.newUser.login != "") {
+                //cut spaces from login
+                temp = temp.replace(/\s/g, '');
+                app.newUser.login = temp;
+
+                if (temp.length >= 3) {
+                    app.errorMessage = '';
+                    temp = app.newUser.password;
+                    if (temp != "") {
+                        if (temp.length >= 8) {
+                            app.errorMessage = '';
+                            app.userValidated = true;
+                            if (action == 'save') {
+                                app.showingSignUpModal = false;
+                                app.signUpNewUser();
+                            }
+                        } else {
+                            app.titleSignUp = 'Password must be 8 or longer symbols';
+                            app.errorMessage = 'Password must be 8 or longer symbols';
+                        }
+                    }
+
+                } else {
+                    app.titleSignUp = 'login must be 3 or longer symbols';
+                    app.errorMessage = 'login must be 3 or longer symbols';
+                    app.userValidated = false;
+                    temp = "";
+                }
+                return app.newUser.login;
+            }
         },
 
         areUserAutorized: function () {
@@ -61,17 +145,18 @@ var app = new Vue({
 
             axios.post("https://rg.usejs.top/api.php?action=signupuser", formData)
                 .then(function (response) {
-                    app.newUser = {email: "", password: "", login: ""};
+                    app.newUser = {login: "", password: ""};
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
                         app.successMessage = response.data.message;
                         app.autorizedUser = true;
-                        app.getAllTodos();
+                        app.areUserAutorized();
                     }
 
                 });
-        },
+        }
+        ,
 
         signInUser: function () {
             var formData = app.toFormData(app.user);
@@ -94,7 +179,8 @@ var app = new Vue({
                     }
 
                 });
-        },
+        }
+        ,
 
         signOutUser: function () {
             var formData = app.toFormData(app.user);
@@ -108,10 +194,9 @@ var app = new Vue({
                         app.autorizedUser = false;
                         app.getAllTodos();
                     }
-
                 });
-        },
-
+        }
+        ,
 
         getAllTodos: function () {
             axios.get("https://rg.usejs.top/api.php?action=readtodos")
@@ -124,7 +209,8 @@ var app = new Vue({
                         app.getAllTasks();
                     }
                 });
-        },
+        }
+        ,
 
         getAllTasks: function () {
             axios.get("https://rg.usejs.top/api.php?action=readtasks")
@@ -133,9 +219,11 @@ var app = new Vue({
                         app.errorMessage = response.data.message;
                     } else {
                         app.tasks = response.data.tasks;
+                        app.clearMessages();
                     }
                 });
-        },
+        }
+        ,
 
         saveTodo: function () {
             var formData = app.toFormData(app.newTodo);
@@ -161,6 +249,8 @@ var app = new Vue({
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
+                        app.successMessage = response.data.message;
+                        app.dataSelected = false;
                         app.getAllTasks();
                     }
                 });
@@ -262,6 +352,7 @@ var app = new Vue({
 
         selectTask: function (task) {
             app.clickedTask = task;
+            app.editingTask = app.clickedTask;
         }
         ,
 
@@ -280,3 +371,4 @@ var app = new Vue({
 
     }
 });
+

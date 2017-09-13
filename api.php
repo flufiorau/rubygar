@@ -30,17 +30,14 @@ if ($action == 'idautorizeduser') {
 
 if ($action == 'signupuser') {
 
-    $email = $_POST['email'];
-    $pass = $_POST['password'];
     $login = $_POST['login'];
-    if (!isset($login)) {
-        $login = $email;
-    };
+    $pass = $_POST['password'];
+
     $password = password_hash($pass, PASSWORD_DEFAULT);
 
-    $result = $conn->query("INSERT INTO `users` (`email`, `password`, `login`) VALUES ('$email', '$password', '$login')");
+    $result = $conn->query("INSERT INTO `users` (`login`, `password` ) VALUES ('$login', '$password')");
     if ($result) {
-        $res['message'] = $login . " sign up successfully";
+        $res['message'] = $login . ", sign up successfully";
         logged_user($login);
 
     } else {

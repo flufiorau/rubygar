@@ -25,7 +25,7 @@ body {
 }
 
 .addons {
-/*    display: none;*/
+    /*    display: none;*/
 }
 
 .fleft {
@@ -71,7 +71,8 @@ table.todolist {
     margin-bottom: 40px;
 }
 
-table.todolist tr {}
+table.todolist tr {
+}
 
 table.todolist th {
     margin: auto;
@@ -113,24 +114,24 @@ table.todolist th {
 }
 
 .gray {
-    color: #a5a5a5/*#eeeeee*/
-    ;
+    color: #a5a5a5 /*#eeeeee*/;
 }
 
 .green {
     color: #008000;
 }
 
-button:hover,
+.btn-success:hover,
+.btn-primary:hover,
 i:hover {
     cursor: pointer;
 }
 
-button.addTask
-    /*,
+button.addTask /*,
     .form button,
     .deleteTaskModalContent button,
-    .deleteTodoModalContent button*/ {
+    .deleteTodoModalContent button*/
+{
     border-top: 2px solid #bbbbbb;
     background: linear-gradient(to top, #508768, #8ac0a3);
     border: 1px solid #4d7f61;
@@ -138,6 +139,19 @@ button.addTask
     height: 37px;
     border-radius: 0 6px 6px 0;
     margin-right: 15px;
+    outline: none;
+}
+
+button.notAddTask {
+    border-top: 2px solid #ededed;
+    background: linear-gradient(to top, #d0d0d0, #d9d9d9);
+    border: 1px solid #ededed;
+    width: 127px;
+    height: 37px;
+    border-radius: 0 6px 6px 0;
+    margin-right: 15px;
+    cursor: default;
+    outline: none;
 }
 
 .form input {
@@ -147,10 +161,14 @@ button.addTask
 input.newTaskName {
     border-top: 2px solid #bbbbbb;
     width: 740px;
-    height: 33px;
+    height: 37px;
     border-radius: 2px 0 0 2px;
     color: #a3a3a3;
     font-size: 1em;
+}
+
+input {
+    padding-left: 10px;
 }
 
 .fa {
@@ -312,4 +330,56 @@ p.errorMessage {
 .deleteTodoModalContent h3,
 .todoModalContent h3 {
     background: #fcfed5;
+}
+
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+.column {
+    height: 150px;
+    width: 150px;
+    float: left;
+    border: 2px solid #666666;
+    background-color: #ccc;
+    margin-right: 5px;
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 3px #000;
+    -ms-box-shadow: inset 0 0 3px #000;
+    box-shadow: inset 0 0 3px #000;
+    text-align: center;
+    cursor: move;
+}
+
+.column header {
+    color: #fff;
+    text-shadow: #000 0 1px;
+    box-shadow: 5px;
+    padding: 5px;
+    background: -moz-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+    background: -webkit-gradient(linear, left top, right top,
+    color-stop(0, rgb(0, 0, 0)),
+    color-stop(0.50, rgb(79, 79, 79)),
+    color-stop(1, rgb(21, 21, 21)));
+    background: -webkit-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+    background: -ms-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+    border-bottom: 1px solid #ddd;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -ms-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -ms-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
 }
