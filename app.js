@@ -3,6 +3,7 @@
  */
 
 var temp = new String();
+var obj = {};
 var app = new Vue({
 
     el: "#application",
@@ -33,12 +34,14 @@ var app = new Vue({
         clickedTask: {},
         editingTask: {},
         clickedTodo: {},
-        dateIsChanged: false
+        dateIsChanged: false,
+        isActive: true
     },
+
     mounted: function () {
         this.areUserAutorized();
-
     },
+
     methods: {
         clearMessages: function () {
             setTimeout(function () {
@@ -55,11 +58,12 @@ var app = new Vue({
         },
 
         validateTextTodo: function (action) {
-            if (app.thisTodo.todoname == " ") {
-                return app.thisTodo.todoname = "";
-            }
+            app.textIsValidated = false;
 
             temp = app.thisTodo.todoname;
+            if (temp.indexOf(" ") == 0) {
+                return app.thisTodo.todoname = "";
+            }
 
             if (temp.length >= 3) {
                 app.textIsValidated = true;
@@ -70,29 +74,29 @@ var app = new Vue({
                     app.showingEditTodoModal = false;
                     app.updateTodo();
                 }
-
-            } else {
-                app.textIsValidated = false;
-                temp = "";
             }
+            temp = "";
         },
 
         validateTextTask: function (action) {
-            if (app.thisTask.texttask == " ") {
+            app.textIsValidated = false;
 
-                return app.thisTask.texttask = "";
-            }
-            if (app.editingTask.texttask == " ") {
-
-                return app.editingTask.texttask = "";
-            }
-
-            if (app.thisTask.texttask != "") {
+            if (action == 'new') {
                 temp = app.thisTask.texttask;
-            } else if (app.editingTask.texttask != "") {
+
+                if (temp.indexOf(" ") == 0) {
+                    app.textIsValidated = false;
+                    return app.thisTask.texttask = "";
+                }
+
+
+            } else if (action == 'edit') {
                 temp = app.editingTask.texttask;
-            } else {
-                app.textIsValidated = false;
+
+                if (temp.indexOf(" ") == 0) {
+                    app.textIsValidated = false;
+                    return app.editingTask.texttask = "";
+                }
             }
 
             if (temp.length >= 3) {
@@ -101,10 +105,8 @@ var app = new Vue({
                     app.showingEditTaskModal = false;
                     app.updateTask();
                 }
-            } else {
-                app.textIsValidated = false;
-                temp = "";
             }
+            temp = "";
         },
 
         validateNewUser: function (action) {
@@ -236,12 +238,28 @@ var app = new Vue({
                     if (response.data.error) {
                         app.errorMessage = response.data.message;
                     } else {
-                        app.tasks = response.data.tasks;
+                        var arr = [];
+                        obj = response.data.tasks;
+
+                        for (var index in obj) {
+                            arr.push(obj[index])
+                        }
+                        function compare(objA, objB) {
+                            console.log(objA);
+                            return objA.iscomplete - objB.iscomplete;
+                        }
+                        arr.sort(compare);
+                        app.tasks = Object.assign({}, arr);
                         app.clearMessages();
                     }
                 });
+            // setOrderId();
         }
         ,
+
+        setOrderId: function(){
+
+        },
 
         saveTodo: function () {
             var formData = app.toFormData(app.thisTodo);

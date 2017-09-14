@@ -135,6 +135,10 @@ if ($action == 'readtasks') {
     $tasks = array();
 
     while ($row = $result->fetch_assoc()) {
+        if (!isset($row->order_id)) {
+            var_dump('yayay');
+            $conn->query("UPDATE `todotasks` SET `order_id` = '$row->id'  WHERE `id` = '$row->id'");
+        };
         array_push($tasks, $row);
     }
 

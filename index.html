@@ -2,306 +2,336 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Simple TODO List</title>
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="./bootstrap.min.css">
-    <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="//jqueryui.com/resources/demos/style.css">
-    <style>
-        #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-        #sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; height: 1.5em; }
-        html>body #sortable li { height: 1.5em; line-height: 1.2em; }
-        .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
-    </style>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        $( function() {
-            $( "#sortable" ).sortable({
-                placeholder: "ui-state-highlight"
-            });
-            $( "#sortable" ).disableSelection();
-        } );
-    </script>
-</head>
+	<meta charset="UTF-8">
+	<title>Simple TODO List</title>
+	<link rel="icon" type="image/png" href="favicon.png"/>
+	<link rel="stylesheet" href="./bootstrap.min.css">
+	<link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="./style.css">
 
+</head>
 <body>
 
-<div id="application">
-    <button v-if="autorizedUser" class="btn fright fa-2x" @click="showingSignOutModal = true;">Sign Out, {{user.login}}</button>
-    <div class="clear"></div>
+<div id="application" v-bind:class="{ active: isActive }">
+	<button v-if="autorizedUser" class="btn fright fa-2x" @click="showingSignOutModal = true;">Sign Out, {{user.login}}
+	</button>
+	<div class="clear"></div>
 
-    <div class="infoMessages">
-        <p class="errorMessage" v-if="errorMessage"> {{errorMessage}} </p>
-        <p class="successMessage" v-if="successMessage"> {{successMessage}} </p>
-
-
-    </div>
-    <div v-if="!autorizedUser">
-        <div class="center">
-            <h1 class="center">SIMPLE TODO LIST</h1>
-            <h2 class="center">FROM RUBY GARAGE</h2>
-            <button class="btn btn-default" @click="showingSignUpModal = true;">Sign Up</button>
-            <button class="btn btn-default" @click="showingSignInModal = true;">Sign In</button>
-        </div>
-        <div class="signUpModal" id="signUpModal" v-if="showingSignUpModal">
-            <div class="signUpModalContainer">
-                <div class="signUpModalHeading">
-                    <p class="fleft">Register your account</p>
-                    <button class="fright close" @click="showingSignUpModal = false;">x</button>
-                    <div class="clear"></div>
-                </div>
-                <div class="signUpModalContent center">
-                    <div class="form ">
-                        <input v-on:keyup="validateNewUser()"
-                               v-model="newUser.login" class="fright lastinput" type="text" placeholder="Your login (min 3 symbols)"> <br>
-                        <input v-on:keyup="validateNewUser()"
-                               v-on:keyup.enter="validateNewUser('save')"
-                               v-model="newUser.password" class="fright" type="password" placeholder="And your password (min 8 symbols)"> <br>
-                        <p class="errorMessage" v-if="errorMessage"> {{errorMessage}} </p>
-                        <p class="successMessage" v-if="successMessage"> {{successMessage}} </p>
-                        <button v-if="userValidated"
-                                class="btn btn-primary" @click="validateNewUser('save')">Sign Up
-                        </button>
-                        <button v-else
-                                class="btn btn-default" v-bind:title="titleSignUp">Sign Up
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="signInModal" id="signInModal" v-if="showingSignInModal">
-            <div class="signInModalContainer center">
-                <div class="signInModalHeading">
-                    <p class="fleft">Sign in to your account</p>
-                    <button class="fright close" @click="showingSignInModal = false;">x</button>
-                    <div class="clear"></div>
-                </div>
-                <div class="signInModalContent">
-                    <div class="form"><input v-model="user.login" class="fright" type="text" placeholder="your username typing here"> <br>
-                        <input v-model="user.password" class="fright" type="password" placeholder="your password"> <br>
-                        <button class="btn btn-primary" @click="showingSignInModal = false; signInUser()">SignIn</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div v-else>
-
-        <div class="signOutModal" id="signOutModal" v-if="showingSignOutModal">
-            <div class="signOutModalContainer center">
-                <div class="signOutModalHeading">
-                    <p class="fleft">You will sign out</p>
-                    <button class="fright close" @click="showingSignOutModal = false;">x</button>
-                    <div class="clear"></div>
-                </div>
-                <div class="signOutModalContent">
-                    <div class="form form-group has-feedback">
-                        <button class="btn btn-warning" @click="showingSignOutModal = false;">Cancel</button>
-                        <button class="btn btn-success" @click="showingSignOutModal = false; signOutUser();">Sign Out</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="addons" v-if="addonsON">
-
-            <!-- start modal blocks for TODOs actions -->
-            <div class="todoModal" id="todoModal" v-if="showingTodoModal">
-                <div class="todoModalContainer">
-                    <div class="todoModalHeading">
-                        <p class="fleft">Creating new Todo</p>
-                        <button class="fright close" @click="showingTodoModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="todoModalContent center">
-                        <div class="form">
-                            <input class="thisTodoName"
-                                   v-on:keyup="validateTextTodo()"
-                                   v-on:keyup.enter="validateTextTodo('save')"
-                                   v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
-                                   placeholder="Type here to create a todo (min 3 symbols)">
-                            <br>
-                            <button v-if="textIsValidated" class="btn btn-primary" @click="validateTextTodo('save')">Save</button>
-                            <button v-else class="btn btn-default">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="editTodoModal userModal" id="editTodoModal" v-if="showingEditTodoModal">
-                <div class="editTodoModalContainer">
-                    <div class="editTodoModalHeading">
-                        <p class="fleft">Editing Todo</p>
-                        <button class="fright close" @click="showingEditTodoModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="editTodoModalContent center">
-                        <div class="form">
-                            <input v-on:keyup="validateTextTodo()"
-                                   v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
-                            <button v-if="textIsValidated"
-                                    class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update</button>
-                            <button v-else
-                                    class="btn btn-default" >Update</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="deleteTodoModal" id="deleteTodoModal" v-if="showingDeleteTodoModal">
-                <div class="deleteTodoModalContainer">
-                    <div class="deleteTodoModalHeading">
-                        <p class="fleft">deleteing Todo</p>
-                        <button class="fright close" @click="showingDeleteTodoModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="deleteTodoModalContent center">
-                        <p class="center">You will delete this todo:</p>
-                        <h3>{{clickedTodo.todoname}}</h3><br>
-                        <p class="fleft">Are you sure?</p>
-                        <button class="btn btn-primary" @click="showingDeleteTodoModal = false; deleteTodo()">Delete</button>
-                    </div>
-                </div>
-            </div>
-            <!--   end modal blocks for TODOs actions -->
-            <!-- start modal blocks for TASKs actions -->
-            <div class="taskModal" id="taskModal" v-if="showingTaskModal">
-                <div class="taskModalContainer">
-                    <div class="taskModalHeading">
-                        <p class="fleft">Select deadline for new task</p>
-                        <button class="fright close" @click="showingTaskModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="taskModalContent center">
-                        <div class="form">
-                            <h3>{{thisTask.texttask}}</h3><br>
-                            <p>Select finish day for task</p>
-                            <input id="deadline" type="date" placeholder="YYYY-MM-YY"
-                                   v-on:change="isDeadline()" v-model="thisTask.finaldate">
-                            <div class="hide"> {{ thisTask.todoid=clickedTodo.id }}</div>
-                            <button v-if="dataSelected" class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save</button>
-                            <button v-else class="btn btn-default">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="editTaskModal" id="editTaskModal" v-if="showingEditTaskModal">
-                <div class="editTaskModalContainer">
-                    <div class="editTaskModalHeading">
-                        <p class="fleft">Task Edit</p>
-                        <button class="fright close" @click="showingEditTaskModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="editTaskModalContent">
-                        <div class="form">
-                            <input v-on:keyup="validateTextTask()"
-                                   v-on:change="validateTextTask()"
-                                   v-on:keyup.enter="validateTextTask('update')"
-                                   v-model="editingTask.texttask" type="text"/>
-                            <p>Finish day for editTask</p>
-                            <input v-on:change="dateIsChanged = true"
-                                   v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
-                                   v-model="editingTask.finaldate" type="date" >
-                            <button v-if="textIsValidated"
-                                    class="btn btn-primary"
-                                    @click="showingEditTaskModal = false; updateTask()">Update</button>
-                            <button v-else-if="dateIsChanged"
-                                    class="btn btn-primary"
-                                    @click="showingEditTaskModal = false; updateTask()">Update</button>
-                            <button v-else
-                                    class="btn btn-default">Update</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="deleteTaskModal" id="deleteTaskModal" v-if="showingDeleteTaskModal">
-                <div class="deleteTaskModalContainer">
-                    <div class="deleteTaskModalHeading">
-                        <p class="fleft">deleteing Task</p>
-                        <button class="fright close" @click="showingDeleteTaskModal = false;">x</button>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="deleteTaskModalContent">
-                        <p class="center">You will delete this task:</p>
-                        <h3>{{clickedTask.texttask}}</h3><br>
-                        <p class="fleft">Are you sure?</p>
-                        <button class="btn btn-primary" @click="showingDeleteTaskModal = false; deleteTask()">Delete</button>
-                    </div>
-                </div>
-            </div>
-            <!--   end modal blocks for TASKs actions -->
-        </div>
-        <table class="todolist ui-sortable" v-for="todo in todos" id="sortable">
-            <tr class="todoheading">
-                <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
-                <th></th>
-                <th>
-                    <h2 class="fleft white">{{todo.todoname}}</h2>
-                </th>
-                <th>
-                    <p class="fright gray">
-                        <i class="fa fa-pencil" aria-hidden="true" @click="showingEditTodoModal = true; selectTodo(todo)"></i>
-                        |
-                        <i class="fa fa-trash" aria-hidden="true" @click="showingDeleteTodoModal = true; selectTodo(todo)"></i>
-                    </p>
-                </th>
-            </tr>
-            <tr class="todonaming">
-                <th><i class="fa fa-plus green fa-2x" aria-hidden="true"></i></th>
-                <th></th>
-                <td>
-                    <input v-on:keyup="validateTextTask()" 
-                           v-on:keyup.enter="showingTaskModal = true; selectTodo(todo);" 
-                           v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
-                           placeholder="Type here to create a task (min 3 symbols)"></td>
-                <td>
-                    <button v-if="textIsValidated" class="fleft white addTask" @click="showingTaskModal = true; selectTodo(todo);">Add task
-                    </button>
-                    <button v-else class="fleft white notAddTask">Add task
-                    </button>
-
-                </td>
-            </tr>
+	<div class="infoMessages">
+		<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
+		<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
 
 
-            <tr v-bind:class="{ completed: task.iscomplete == 1 }" class="form todolistitem "
+	</div>
+	<div v-if="!autorizedUser">
+		<div class="center">
+			<h1 class="center">SIMPLE TODO LIST</h1>
+			<h2 class="center">FROM RUBY GARAGE</h2>
+			<button class="btn btn-default" @click="showingSignUpModal = true;">Sign Up</button>
+			<button class="btn btn-default" @click="showingSignInModal = true;">Sign In</button>
+		</div>
+		<div class="signUpModal" id="signUpModal" v-if="showingSignUpModal">
+			<div class="signUpModalContainer">
+				<div class="signUpModalHeading">
+					<p class="fleft">Register your account</p>
+					<button class="fright close" @click="showingSignUpModal = false;">x</button>
+					<div class="clear"></div>
+				</div>
+				<div class="signUpModalContent center">
+					<div class="form ">
+						<input v-on:keyup="validateNewUser()"
+							   v-model="newUser.login" class="fright lastinput" type="text"
+							   placeholder="Your login (min 3 symbols)">
+						<br>
+						<input v-on:keyup="validateNewUser()"
+							   v-on:keyup.enter="validateNewUser('save')"
+							   v-model="newUser.password" class="fright" type="password"
+							   placeholder="And your password (min 8 symbols)">
+						<br>
+						<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
+						<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
+						<button v-if="userValidated"
+								class="btn btn-primary" @click="validateNewUser('save')">Sign Up
+						</button>
+						<button v-else
+								class="btn btn-default" v-bind:title="titleSignUp">Sign Up
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                v-for="task in tasks"
-                v-if="todo.id==task.todoid">
-                <th class="center">
-                    <div v-if="task.iscomplete == 1">
-                        <input type="checkbox" checked v-on:click="selectTask(task);completedTask()"></div>
-                    <div v-else>
-                        <input type="checkbox" v-on:click="selectTask(task);completedTask()"></div>
-                </th>
-                <th class="lines"></th>
-                <td>
-                    <!--<input type="text" v-bind="app.readonly" v-bind:value="task.texttask">-->
-                    <h3>{{task.texttask}}</h3>
-                </td>
-                <td class="flex center">
-                    <div class="inner-flex down-up ui-state-default ui-sortable-handle"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div>
-                    <p class="inner-flex"> | </p> <i class="fa fa-pencil inner-flex" aria-hidden="true" @click="showingEditTaskModal = true; selectTask(task)"></i>
-                    <p class="inner-flex"> | </p> <i class="fa fa-trash inner-flex" aria-hidden="true" @click="showingDeleteTaskModal = true; selectTask(task)"></i></td>
-            </tr>
+		<div class="signInModal" id="signInModal" v-if="showingSignInModal">
+			<div class="signInModalContainer center">
+				<div class="signInModalHeading">
+					<p class="fleft">Sign in to your account</p>
+					<button class="fright close" @click="showingSignInModal = false;">x</button>
+					<div class="clear"></div>
+				</div>
+				<div class="signInModalContent">
+					<div class="form">
+						<input v-model="user.login" class="fright" type="text" placeholder="your username typing here">
+						<br>
+						<input v-model="user.password" class="fright" type="password" placeholder="your password">
+						<br>
+						<button class="btn btn-primary" @click="showingSignInModal = false; signInUser()">SignIn</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        </table>
-        <div class="center">
-            <button class="addTodo white" @click="showingTodoModal = true;"><i class="fa fa-plus" aria-hidden="true"></i>Add TODO List</button>
-        </div>
-    </div>
+	</div>
+	<div v-else>
 
-    <div class="hide">{{addonsON=true}}</div>
+		<div class="signOutModal" id="signOutModal" v-if="showingSignOutModal">
+			<div class="signOutModalContainer center">
+				<div class="signOutModalHeading">
+					<p class="fleft">You will sign out</p>
+					<button class="fright close" @click="showingSignOutModal = false;">x</button>
+					<div class="clear"></div>
+				</div>
+				<div class="signOutModalContent">
+					<div class="form form-group has-feedback">
+						<button class="btn btn-warning" @click="showingSignOutModal = false;">Cancel</button>
+						<button class="btn btn-success" @click="showingSignOutModal = false; signOutUser();">Sign Out</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="addons" v-if="addonsON">
 
+			<!-- start modal blocks for TODOs actions -->
+			<div class="todoModal" id="todoModal" v-if="showingTodoModal">
+				<div class="todoModalContainer">
+					<div class="todoModalHeading">
+						<p class="fleft">Creating new Todo</p>
+						<button class="fright close" @click="showingTodoModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="todoModalContent center">
+						<div class="form">
+							<input class="thisTodoName"
+								   v-on:keyup="validateTextTodo()"
+								   v-on:keyup.enter="validateTextTodo('save')"
+								   v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
+								   placeholder="Type here to create a todo (min 3 symbols)">
+							<br>
+							<button v-if="textIsValidated" class="btn btn-primary" @click="validateTextTodo('save')">Save</button>
+							<button v-else class="btn btn-default">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="editTodoModal userModal" id="editTodoModal" v-if="showingEditTodoModal">
+				<div class="editTodoModalContainer">
+					<div class="editTodoModalHeading">
+						<p class="fleft">Editing Todo</p>
+						<button class="fright close" @click="showingEditTodoModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="editTodoModalContent center">
+						<div class="form">
+							<input v-on:keyup="validateTextTodo()"
+								   v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
+							<button v-if="textIsValidated"
+									class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update
+							</button>
+							<button v-else
+									class="btn btn-default">Update
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="deleteTodoModal" id="deleteTodoModal" v-if="showingDeleteTodoModal">
+				<div class="deleteTodoModalContainer">
+					<div class="deleteTodoModalHeading">
+						<p class="fleft">deleting Todo</p>
+						<button class="fright close" @click="showingDeleteTodoModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="deleteTodoModalContent center">
+						<p class="center">You will delete this todo:</p>
+						<h3>{{clickedTodo.todoname}}</h3><br>
+						<p class="fleft">Are you sure?</p>
+						<button class="btn btn-primary" @click="showingDeleteTodoModal = false; deleteTodo()">Delete</button>
+					</div>
+				</div>
+			</div>
+			<!--   end modal blocks for TODOs actions -->
+			<!-- start modal blocks for TASKs actions -->
+			<div class="taskModal" id="taskModal" v-if="showingTaskModal">
+				<div class="taskModalContainer">
+					<div class="taskModalHeading">
+						<p class="fleft">Select deadline for new task</p>
+						<button class="fright close" @click="showingTaskModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="taskModalContent center">
+						<div class="form">
+							<h3>{{thisTask.texttask}}</h3><br>
+							<p>Select finish day for task</p>
+							<input id="deadline" type="date" placeholder="YYYY-MM-YY"
+								   v-on:change="isDeadline()" v-model="thisTask.finaldate"
+								   v-on:keyup.enter="showingTaskModal = false; saveTask()">
+							<div class="hide"> {{ thisTask.todoid=clickedTodo.id }}</div>
+							<button v-if="dataSelected" class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save
+							</button>
+							<button v-else class="btn btn-default">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="editTaskModal" id="editTaskModal" v-if="showingEditTaskModal">
+				<div class="editTaskModalContainer">
+					<div class="editTaskModalHeading">
+						<p class="fleft">Task Edit</p>
+						<button class="fright close" @click="showingEditTaskModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="editTaskModalContent">
+						<div class="form">
+							<input v-on:keyup="validateTextTask('edit')"
+								   v-on:change="validateTextTask('edit')"
+								   v-on:keyup.enter="validateTextTask('update')"
+								   v-model="editingTask.texttask" type="text"/>
+							<p>Finish day for editTask</p>
+							<input v-on:change="dateIsChanged = true"
+								   v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
+								   v-model="editingTask.finaldate" type="date">
+							<button v-if="textIsValidated"
+									class="btn btn-primary"
+									@click="showingEditTaskModal = false; updateTask()">Update
+							</button>
+							<button v-else-if="dateIsChanged"
+									class="btn btn-primary"
+									@click="showingEditTaskModal = false; updateTask()">Update
+							</button>
+							<button v-else
+									class="btn btn-default">Update
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="deleteTaskModal" id="deleteTaskModal" v-if="showingDeleteTaskModal">
+				<div class="deleteTaskModalContainer">
+					<div class="deleteTaskModalHeading">
+						<p class="fleft">deleteing Task</p>
+						<button class="fright close" @click="showingDeleteTaskModal = false;">x</button>
+						<div class="clear"></div>
+					</div>
+					<div class="deleteTaskModalContent">
+						<p class="center">You will delete this task:</p>
+						<h3>{{clickedTask.texttask}}</h3><br>
+						<p class="fleft">Are you sure?</p>
+						<button class="btn btn-primary" @click="showingDeleteTaskModal = false; deleteTask()">Delete</button>
+					</div>
+				</div>
+			</div>
+			<!--   end modal blocks for TASKs actions -->
+		</div>
+		<table class="todolist ui-sortable" v-for="todo in todos" id="sortable">
+			<thead>
+			<tr class="todoheading">
+				<td>
+					<i class="fa fa-calendar" aria-hidden="true"></i>
+				</td>
+				<td></td>
+				<td>
+					<h2 class="fleft white">{{todo.todoname}}</h2>
+				</td>
+				<td>
+					<p class="fright gray">
+						<i class="fa fa-pencil" aria-hidden="true" @click="showingEditTodoModal = true; selectTodo(todo)"></i>
+						|
+						<i class="fa fa-trash" aria-hidden="true" @click="showingDeleteTodoModal = true; selectTodo(todo)"></i>
+					</p>
+				</td>
+			</tr>
+			<tr class="tasknaming">
+				<td>
+					<i class="fa fa-plus green fa-2x" aria-hidden="true"></i>
+				</td>
+				<td></td>
+				<td>
+					<input v-on:keyup="validateTextTask('new')"
+						   v-on:keyup.enter="showingTaskModal = true; selectTodo(todo);"
+						   v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
+						   placeholder="Type here to create a task (min 3 symbols)">
+				</td>
+				<td>
+					<button v-if="textIsValidated" class="fleft white addTask"
+							@click="showingTaskModal = true; selectTodo(todo);">Add task
+					</button>
+					<button v-else class="fleft white notAddTask">Add task
+					</button>
+
+				</td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr v-for="task in tasks"
+				v-if="todo.id==task.todoid" v-bind:class="{ completed: task.iscomplete == 1 }" class="todolistitem">
+
+				<td class="center">
+					<div v-if="task.iscomplete == 1">
+						<input type="checkbox" checked v-on:click="selectTask(task);completedTask()">
+					</div>
+					<div v-else>
+						<input type="checkbox" v-on:click="selectTask(task);completedTask()">
+					</div>
+				</td>
+				<td class="lines"></td>
+				<td class="drag">
+					<p>{{task.texttask}}</p>
+				</td>
+				<td class="flex center drag">
+					<i class="dragHandle fa fa-arrows inner-flex" aria-hidden="true"></i>
+					<p class="inner-flex"> |</p>
+					<i class="fa fa-pencil inner-flex" aria-hidden="true"
+					   @click="showingEditTaskModal = true; selectTask(task)"></i>
+					<p class="inner-flex"> |</p>
+					<i class="fa fa-trash inner-flex" aria-hidden="true"
+					   @click="showingDeleteTaskModal = true; selectTask(task)"></i>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="center">
+			<button class="addTodo white" @click="showingTodoModal = true;">
+				<i class="fa fa-plus" aria-hidden="true"></i>
+				Add TODO List
+			</button>
+		</div>
+	</div>
+
+	<div class="hide">{{addonsON=true}}</div>
 </div>
 
 </body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="./jquery.tablednd.0.8.min.js"></script>
 <script src="./axios.min.js"></script>
-
-<script src="./vue.js"></script>
+<script src="./vue.min.js"></script>
 <script src="./app.js"></script>
 
+<script src="./jquery.tablednd.0.8.min.js"></script>
+<script>
+	$("body").bind("DOMSubtreeModified", function () {
+		$('.todolist').tableDnD({
+			onDrop: function (table, row) {
+				alert($.tableDnD.serialize());
+				console.log('drag&drop');
+			},
+			dragHandle: ".dragHandle"
+		});
+		$("tr.todolist").hover(function () {
+			$(this.cells[0]).addClass('showDragHandle');
+		}, function () {
+			$(this.cells[0]).removeClass('showDragHandle');
+		});
+
+	});
+</script>
 </html>

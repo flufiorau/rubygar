@@ -3,6 +3,7 @@
     padding: 0;
     /*border: 0;*/
     font-family: Arial;
+    font-size: 1.05em;
 }
 
 html {
@@ -15,9 +16,14 @@ body {
 }
 
 #application {
+    display: none;
     width: 950px;
     margin: auto;
     margin-top: 45px;
+}
+
+#application.active {
+    display: block !important;
 }
 
 .container {
@@ -48,6 +54,7 @@ body {
     border-right: 1px solid #e4bcbc;
     border-left: 1px solid #e4bcbc;
     width: 3px;
+    padding: 1px !important;
 }
 
 .completed {
@@ -89,32 +96,34 @@ table.todolist th {
     padding: 6px;
 }
 
-.todonaming {
+.tasknaming {
     height: 52px;
     font-size: 1.0em;
     background-color: #d0d0d0;
+
 }
 
 .todolistitem {
-    background-color: #ffffff;
+
     font-size: 1em;
     color: #a3a3a3;
 }
 
 .todolistitem:hover {
-    background-color: #fcfed5;
+    background-clip: border-box;
+    background-color: #ffe96a;
 }
 
 .todolistitem td {
-    padding: 6px;
+    padding: 0 6px;
 }
 
 .white {
-    color: #ffffff;
+    color: #fff;
 }
 
 .gray {
-    color: #a5a5a5 /*#eeeeee*/;
+    color: #a5a5a5;
 }
 
 .green {
@@ -332,54 +341,16 @@ p.errorMessage {
     background: #fcfed5;
 }
 
-/* Prevent the text contents of draggable elements from being selectable. */
-[draggable] {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-}
-
-.column {
-    height: 150px;
-    width: 150px;
-    float: left;
-    border: 2px solid #666666;
-    background-color: #ccc;
-    margin-right: 5px;
-    -webkit-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 3px #000;
-    -ms-box-shadow: inset 0 0 3px #000;
-    box-shadow: inset 0 0 3px #000;
-    text-align: center;
+td.showDragHandle {
+    background-repeat: no-repeat;
     cursor: move;
 }
 
-.column header {
-    color: #fff;
-    text-shadow: #000 0 1px;
-    box-shadow: 5px;
-    padding: 5px;
-    background: -moz-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
-    background: -webkit-gradient(linear, left top, right top,
-    color-stop(0, rgb(0, 0, 0)),
-    color-stop(0.50, rgb(79, 79, 79)),
-    color-stop(1, rgb(21, 21, 21)));
-    background: -webkit-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
-    background: -ms-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
-    border-bottom: 1px solid #ddd;
-    -webkit-border-top-left-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -ms-border-radius-topleft: 10px;
-    border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -ms-border-top-right-radius: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-right-radius: 10px;
+tr.tDnD_whileDrag{
+    background-color: #ffe96a;
+}
+
+.tDnD_whileDrag td.drag {
+    color: #000;
+
 }
