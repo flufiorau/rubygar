@@ -61,10 +61,6 @@ body {
     text-decoration: line-through;
 }
 
-tr.completed {
-    background-color: #d3f6e5;
-}
-
 h2 {
     font-size: 20px;
 }
@@ -78,8 +74,6 @@ table.todolist {
     margin-bottom: 40px;
 }
 
-table.todolist tr {
-}
 
 table.todolist th {
     margin: auto;
@@ -104,18 +98,36 @@ table.todolist th {
 }
 
 .todolistitem {
-
     font-size: 1em;
     color: #a3a3a3;
 }
 
-.todolistitem:hover {
-    background-clip: border-box;
+
+tbody tr.todolistitem.completed td{
+    background-color: #d3f6e5;
+}
+
+
+tbody tr.todolistitem:hover td
+{
     background-color: #ffe96a;
+}
+
+tbody tr.todolistitem.completed:last-child{
+    border-radius: 2px 2px 18px 18px !important;
+}
+
+tbody tr.todolistitem.completed:last-child td:first-child, tbody tr.todolistitem:last-child:hover td:first-child {
+    border-radius: 0 0 0 18px;
+}
+
+tbody tr.todolistitem.completed:last-child td:last-child, tbody tr.todolistitem:last-child:hover td:last-child {
+    border-radius: 0 0 18px 0;
 }
 
 .todolistitem td {
     padding: 0 6px;
+    border-spacing: 0px;
 }
 
 .white {
@@ -136,11 +148,7 @@ i:hover {
     cursor: pointer;
 }
 
-button.addTask /*,
-    .form button,
-    .deleteTaskModalContent button,
-    .deleteTodoModalContent button*/
-{
+button.addTask {
     border-top: 2px solid #bbbbbb;
     background: linear-gradient(to top, #508768, #8ac0a3);
     border: 1px solid #4d7f61;
@@ -341,6 +349,10 @@ p.errorMessage {
     background: #fcfed5;
 }
 
+td, p, h2, i {
+    margin: auto 2px;
+}
+
 td.showDragHandle {
     background-repeat: no-repeat;
     cursor: move;
@@ -348,9 +360,20 @@ td.showDragHandle {
 
 tr.tDnD_whileDrag{
     background-color: #ffe96a;
+    cursor: move;
+}
+
+i.dragHandle.fa.fa-arrows.inner-flex{
+    cursor: move;
 }
 
 .tDnD_whileDrag td.drag {
     color: #000;
+}
 
+.tDnD_whileDrag tr:last-child:hover td:first-child {
+    border-radius: 0 0 0 18px;
+}
+.tDnD_whileDrag tr:last-child:hover td:last-child {
+    border-radius: 0 0 18px 0;
 }

@@ -133,17 +133,34 @@ if ($action == 'deletetodo') {
 if ($action == 'readtasks') {
     $result = $conn->query("SELECT * FROM `todotasks` WHERE `user_id`='$signinuserid'");
     $tasks = array();
+    $queries = array();
 
     while ($row = $result->fetch_assoc()) {
-        if (!isset($row->order_id)) {
-            var_dump('yayay');
-            $conn->query("UPDATE `todotasks` SET `order_id` = '$row->id'  WHERE `id` = '$row->id'");
-        };
         array_push($tasks, $row);
+        if ($row['order_id'] == "0") {
+            array_push($queries, $row);
+        };
     }
-
+    $res['queries'] = $queries;
+//    print_r($queries);
     $res['tasks'] = $tasks;
 }
+
+if ($action == 'orderingtasks') {
+    $orderid = $_POST['order_id'];
+    if ($orderid == "0"){
+        $id = $_POST['id'];
+        $orderid = $_POST['id'];
+        $result = $conn->query("UPDATE `todotasks` SET `order_id` = " . $neworderid . " WHERE `order_id` = " . $taskorderid . " ");
+    }
+}
+
+if ($action == 'changeordertasks') {
+    $taskid = $_GET['taskid'];
+    $neworderid = $_GET['order_id'];
+    $result = $conn->query("UPDATE `todotasks` SET `order_id` = '$neworderid' WHERE `id` = '$taskid' ");
+}
+
 
 if ($action == 'createtask') {
 
@@ -152,6 +169,7 @@ if ($action == 'createtask') {
     $todoid = $_POST['todoid'];
 
     $result = $conn->query("INSERT INTO `todotasks` (`texttask`, `finaldate`, `todoid`, `user_id`) VALUES ('$tasktext', '$finaldate', '$todoid', '$signinuserid')");
+
     if ($result) {
         $res['message'] = "Task added successfully";
     } else {

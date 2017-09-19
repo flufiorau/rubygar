@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8">
 	<title>Simple TODO List</title>
-	<link rel="icon" type="image/png" href="favicon.png"/>
 	<link rel="stylesheet" href="./bootstrap.min.css">
 	<link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="./style.css">
-
+	<link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body>
-
 <div id="application" v-bind:class="{ active: isActive }">
 	<button v-if="autorizedUser" class="btn fright fa-2x" @click="showingSignOutModal = true;">Sign Out, {{user.login}}
 	</button>
@@ -20,8 +17,6 @@
 	<div class="infoMessages">
 		<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
 		<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
-
-
 	</div>
 	<div v-if="!autorizedUser">
 		<div class="center">
@@ -40,21 +35,21 @@
 				<div class="signUpModalContent center">
 					<div class="form ">
 						<input v-on:keyup="validateNewUser()"
-							   v-model="newUser.login" class="fright lastinput" type="text"
-							   placeholder="Your login (min 3 symbols)">
+						       v-model="newUser.login" class="fright lastinput" type="text"
+						       placeholder="Your login (min 3 symbols)">
 						<br>
 						<input v-on:keyup="validateNewUser()"
-							   v-on:keyup.enter="validateNewUser('save')"
-							   v-model="newUser.password" class="fright" type="password"
-							   placeholder="And your password (min 8 symbols)">
+						       v-on:keyup.enter="validateNewUser('save')"
+						       v-model="newUser.password" class="fright" type="password"
+						       placeholder="And your password (min 8 symbols)">
 						<br>
 						<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
 						<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
 						<button v-if="userValidated"
-								class="btn btn-primary" @click="validateNewUser('save')">Sign Up
+						        class="btn btn-primary" @click="validateNewUser('save')">Sign Up
 						</button>
 						<button v-else
-								class="btn btn-default" v-bind:title="titleSignUp">Sign Up
+						        class="btn btn-default" v-bind:title="titleSignUp">Sign Up
 						</button>
 					</div>
 				</div>
@@ -72,7 +67,8 @@
 					<div class="form">
 						<input v-model="user.login" class="fright" type="text" placeholder="your username typing here">
 						<br>
-						<input v-model="user.password" class="fright" type="password" placeholder="your password">
+						<input v-model="user.password" class="fright" type="password" placeholder="your password"
+						       v-on:keyup.enter="showingSignInModal = false; signInUser()">
 						<br>
 						<button class="btn btn-primary" @click="showingSignInModal = false; signInUser()">SignIn</button>
 					</div>
@@ -111,10 +107,10 @@
 					<div class="todoModalContent center">
 						<div class="form">
 							<input class="thisTodoName"
-								   v-on:keyup="validateTextTodo()"
-								   v-on:keyup.enter="validateTextTodo('save')"
-								   v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
-								   placeholder="Type here to create a todo (min 3 symbols)">
+							       v-on:keyup="validateTextTodo()"
+							       v-on:keyup.enter="validateTextTodo('save')"
+							       v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
+							       placeholder="Type here to create a todo (min 3 symbols)">
 							<br>
 							<button v-if="textIsValidated" class="btn btn-primary" @click="validateTextTodo('save')">Save</button>
 							<button v-else class="btn btn-default">Save</button>
@@ -132,12 +128,12 @@
 					<div class="editTodoModalContent center">
 						<div class="form">
 							<input v-on:keyup="validateTextTodo()"
-								   v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
+							       v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
 							<button v-if="textIsValidated"
-									class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update
+							        class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update
 							</button>
 							<button v-else
-									class="btn btn-default">Update
+							        class="btn btn-default">Update
 							</button>
 						</div>
 					</div>
@@ -172,8 +168,8 @@
 							<h3>{{thisTask.texttask}}</h3><br>
 							<p>Select finish day for task</p>
 							<input id="deadline" type="date" placeholder="YYYY-MM-YY"
-								   v-on:change="isDeadline()" v-model="thisTask.finaldate"
-								   v-on:keyup.enter="showingTaskModal = false; saveTask()">
+							       v-on:change="isDeadline()" v-model="thisTask.finaldate"
+							       v-on:keyup.enter="showingTaskModal = false; saveTask()">
 							<div class="hide"> {{ thisTask.todoid=clickedTodo.id }}</div>
 							<button v-if="dataSelected" class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save
 							</button>
@@ -192,23 +188,23 @@
 					<div class="editTaskModalContent">
 						<div class="form">
 							<input v-on:keyup="validateTextTask('edit')"
-								   v-on:change="validateTextTask('edit')"
-								   v-on:keyup.enter="validateTextTask('update')"
-								   v-model="editingTask.texttask" type="text"/>
+							       v-on:change="validateTextTask('edit')"
+							       v-on:keyup.enter="validateTextTask('update')"
+							       v-model="editingTask.texttask" type="text"/>
 							<p>Finish day for editTask</p>
 							<input v-on:change="dateIsChanged = true"
-								   v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
-								   v-model="editingTask.finaldate" type="date">
+							       v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
+							       v-model="editingTask.finaldate" type="date">
 							<button v-if="textIsValidated"
-									class="btn btn-primary"
-									@click="showingEditTaskModal = false; updateTask()">Update
+							        class="btn btn-primary"
+							        @click="showingEditTaskModal = false; updateTask()">Update
 							</button>
 							<button v-else-if="dateIsChanged"
-									class="btn btn-primary"
-									@click="showingEditTaskModal = false; updateTask()">Update
+							        class="btn btn-primary"
+							        @click="showingEditTaskModal = false; updateTask()">Update
 							</button>
 							<button v-else
-									class="btn btn-default">Update
+							        class="btn btn-default">Update
 							</button>
 						</div>
 					</div>
@@ -231,7 +227,7 @@
 			</div>
 			<!--   end modal blocks for TASKs actions -->
 		</div>
-		<table class="todolist ui-sortable" v-for="todo in todos" id="sortable">
+		<table class="todolist" v-for="todo in todos" id="sortable" v-on:change="setOrderId();">
 			<thead>
 			<tr class="todoheading">
 				<td>
@@ -255,14 +251,14 @@
 				</td>
 				<td></td>
 				<td>
-					<input v-on:keyup="validateTextTask('new')"
-						   v-on:keyup.enter="showingTaskModal = true; selectTodo(todo);"
-						   v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
-						   placeholder="Type here to create a task (min 3 symbols)">
+					<input v-on:keyup="validateTextTask('new');"
+					       v-on:keyup.enter="selectTodo(todo); validateTextTask('add');"
+					       v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
+					       placeholder="Type here to create a task (min 3 symbols)">
 				</td>
 				<td>
 					<button v-if="textIsValidated" class="fleft white addTask"
-							@click="showingTaskModal = true; selectTodo(todo);">Add task
+					        @click="showingTaskModal = true; selectTodo(todo);">Add task
 					</button>
 					<button v-else class="fleft white notAddTask">Add task
 					</button>
@@ -271,17 +267,23 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr v-for="task in tasks"
-				v-if="todo.id==task.todoid" v-bind:class="{ completed: task.iscomplete == 1 }" class="todolistitem">
+			<tr v-for="(task, key, index) in tasks" :key="task.order_id"
+			    v-bind:id="task.id"
+			    v-if="todo.id==task.todoid"
+			    v-bind:class="{ completed: task.iscomplete == 1 }"
+			    class="todolistitem">
 
-				<td class="center">
-					<div v-if="task.iscomplete == 1">
-						<input type="checkbox" checked v-on:click="selectTask(task);completedTask()">
-					</div>
-					<div v-else>
-						<input type="checkbox" v-on:click="selectTask(task);completedTask()">
-					</div>
+				<td v-if="task.iscomplete == 1" class="drag center">
+					<input type="checkbox" checked
+					       v-on:change="selectTask(task)"
+					       v-on:click="selectTask(task);completedTask()">
 				</td>
+				<td v-else class="center" class="drag">
+					<input type="checkbox"
+					       v-on:change="selectTask(task)"
+					       v-on:click="selectTask(task);completedTask()">
+				</td>
+
 				<td class="lines"></td>
 				<td class="drag">
 					<p>{{task.texttask}}</p>
@@ -308,30 +310,11 @@
 
 	<div class="hide">{{addonsON=true}}</div>
 </div>
-
 </body>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script type="text/javascript" src="./jquery.tablednd.0.8.min.js"></script>
-<script src="./axios.min.js"></script>
-<script src="./vue.min.js"></script>
-<script src="./app.js"></script>
 
+<script src="./jquery-1.12.4.min.js"></script>
 <script src="./jquery.tablednd.0.8.min.js"></script>
-<script>
-	$("body").bind("DOMSubtreeModified", function () {
-		$('.todolist').tableDnD({
-			onDrop: function (table, row) {
-				alert($.tableDnD.serialize());
-				console.log('drag&drop');
-			},
-			dragHandle: ".dragHandle"
-		});
-		$("tr.todolist").hover(function () {
-			$(this.cells[0]).addClass('showDragHandle');
-		}, function () {
-			$(this.cells[0]).removeClass('showDragHandle');
-		});
-
-	});
-</script>
+<script src="./axios.min.js"></script>
+<script src="./vue.js"></script>
+<script src="./app.js"></script>
 </html>
