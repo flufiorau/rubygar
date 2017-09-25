@@ -204,6 +204,11 @@ input {
     margin: auto;
 }
 
+td.flex.center.drag{
+    margin: auto 0;
+}
+
+
 .fa-caret-up {
     padding-top: 0;
     padding-bottom: 0;

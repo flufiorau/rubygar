@@ -13,14 +13,12 @@
 	<button v-if="autorizedUser" class="btn fright fa-2x" @click="showingSignOutModal = true;">Sign Out, {{user.login}}
 	</button>
 	<div class="clear"></div>
-
 	<div class="infoMessages">
 		<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
 		<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
 	</div>
 	<div v-if="!autorizedUser">
-		<div class="center">
-			<h1 class="center">SIMPLE TODO LIST</h1>
+		<div class="center"><h1 class="center">SIMPLE TODO LIST</h1>
 			<h2 class="center">FROM RUBY GARAGE</h2>
 			<button class="btn btn-default" @click="showingSignUpModal = true;">Sign Up</button>
 			<button class="btn btn-default" @click="showingSignInModal = true;">Sign In</button>
@@ -34,28 +32,20 @@
 				</div>
 				<div class="signUpModalContent center">
 					<div class="form ">
-						<input v-on:keyup="validateNewUser()"
-						       v-model="newUser.login" class="fright lastinput" type="text"
+						<input v-on:keyup="validateNewUser()" v-model="newUser.login" class="fright lastinput" type="text"
 						       placeholder="Your login (min 3 symbols)">
 						<br>
-						<input v-on:keyup="validateNewUser()"
-						       v-on:keyup.enter="validateNewUser('save')"
-						       v-model="newUser.password" class="fright" type="password"
-						       placeholder="And your password (min 8 symbols)">
+						<input v-on:keyup="validateNewUser()" v-on:keyup.enter="validateNewUser('save')" v-model="newUser.password"
+						       class="fright" type="password" placeholder="And your password (min 8 symbols)">
 						<br>
 						<p class="errorMessage" v-if="errorMessage"> {{errorMessage}}</p>
 						<p class="successMessage" v-if="successMessage"> {{successMessage}}</p>
-						<button v-if="userValidated"
-						        class="btn btn-primary" @click="validateNewUser('save')">Sign Up
-						</button>
-						<button v-else
-						        class="btn btn-default" v-bind:title="titleSignUp">Sign Up
-						</button>
+						<button v-if="userValidated" class="btn btn-primary" @click="validateNewUser('save')">Sign Up</button>
+						<button v-else class="btn btn-default" v-bind:title="titleSignUp">Sign Up</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="signInModal" id="signInModal" v-if="showingSignInModal">
 			<div class="signInModalContainer center">
 				<div class="signInModalHeading">
@@ -75,10 +65,8 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 	<div v-else>
-
 		<div class="signOutModal" id="signOutModal" v-if="showingSignOutModal">
 			<div class="signOutModalContainer center">
 				<div class="signOutModalHeading">
@@ -94,9 +82,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="addons" v-if="addonsON">
-
-			<!-- start modal blocks for TODOs actions -->
+		<div class="addons" v-if="addonsON"> <!-- start modal blocks for TODOs actions -->
 			<div class="todoModal" id="todoModal" v-if="showingTodoModal">
 				<div class="todoModalContainer">
 					<div class="todoModalHeading">
@@ -106,9 +92,7 @@
 					</div>
 					<div class="todoModalContent center">
 						<div class="form">
-							<input class="thisTodoName"
-							       v-on:keyup="validateTextTodo()"
-							       v-on:keyup.enter="validateTextTodo('save')"
+							<input class="thisTodoName" v-on:keyup="validateTextTodo()" v-on:keyup.enter="validateTextTodo('save')"
 							       v-model="thisTodo.todoname" class="fright thisTodoName" type="text"
 							       placeholder="Type here to create a todo (min 3 symbols)">
 							<br>
@@ -127,14 +111,12 @@
 					</div>
 					<div class="editTodoModalContent center">
 						<div class="form">
-							<input v-on:keyup="validateTextTodo()"
-							       v-on:keyup.enter="validateTextTodo('update')" type="text" v-model="thisTodo.todoname"/>
-							<button v-if="textIsValidated"
-							        class="btn btn-primary" @click="showingEditTodoModal = false; updateTodo()">Update
+							<input v-on:keyup="validateTextTodo()" v-on:keyup.enter="validateTextTodo('update')" type="text"
+							       v-model="thisTodo.todoname"/>
+							<button v-if="textIsValidated" class="btn btn-primary"
+							        @click="showingEditTodoModal = false; updateTodo()">Update
 							</button>
-							<button v-else
-							        class="btn btn-default">Update
-							</button>
+							<button v-else class="btn btn-default">Update</button>
 						</div>
 					</div>
 				</div>
@@ -146,16 +128,14 @@
 						<button class="fright close" @click="showingDeleteTodoModal = false;">x</button>
 						<div class="clear"></div>
 					</div>
-					<div class="deleteTodoModalContent center">
-						<p class="center">You will delete this todo:</p>
+					<div class="center deleteTodoModalContent">
+						<p>You will delete this todo:</p>
 						<h3>{{clickedTodo.todoname}}</h3><br>
-						<p class="fleft">Are you sure?</p>
+						<p>Are you sure?</p>
 						<button class="btn btn-primary" @click="showingDeleteTodoModal = false; deleteTodo()">Delete</button>
 					</div>
 				</div>
-			</div>
-			<!--   end modal blocks for TODOs actions -->
-			<!-- start modal blocks for TASKs actions -->
+			</div> <!--   end modal blocks for TODOs actions --> <!-- start modal blocks for TASKs actions -->
 			<div class="taskModal" id="taskModal" v-if="showingTaskModal">
 				<div class="taskModalContainer">
 					<div class="taskModalHeading">
@@ -164,12 +144,10 @@
 						<div class="clear"></div>
 					</div>
 					<div class="taskModalContent center">
-						<div class="form">
-							<h3>{{thisTask.texttask}}</h3><br>
+						<div class="form"><h3>{{thisTask.texttask}}</h3><br>
 							<p>Select finish day for task</p>
-							<input id="deadline" type="date" placeholder="YYYY-MM-YY"
-							       v-on:change="isDeadline()" v-model="thisTask.finaldate"
-							       v-on:keyup.enter="showingTaskModal = false; saveTask()">
+							<input id="deadline" type="date" placeholder="YYYY-MM-YY" v-on:change="isDeadline()"
+							       v-model="thisTask.finaldate" v-on:keyup.enter="showingTaskModal = false; saveTask()">
 							<div class="hide"> {{ thisTask.todoid=clickedTodo.id }}</div>
 							<button v-if="dataSelected" class="btn btn-primary" @click="showingTaskModal = false; saveTask()">Save
 							</button>
@@ -187,25 +165,18 @@
 					</div>
 					<div class="editTaskModalContent">
 						<div class="form">
-							<input v-on:keyup="validateTextTask('edit')"
-							       v-on:change="validateTextTask('edit')"
-							       v-on:keyup.enter="validateTextTask('update')"
-							       v-model="editingTask.texttask" type="text"/>
+							<input v-on:keyup="validateTextTask('edit')" v-on:change="validateTextTask('edit')"
+							       v-on:keyup.enter="validateTextTask('update')" v-model="editingTask.texttask" type="text"/>
 							<p>Finish day for editTask</p>
-							<input v-on:change="dateIsChanged = true"
-							       v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
+							<input v-on:change="dateIsChanged = true" v-on:keyup.enter="showingEditTaskModal = false; updateTask()"
 							       v-model="editingTask.finaldate" type="date">
-							<button v-if="textIsValidated"
-							        class="btn btn-primary"
+							<button v-if="textIsValidated" class="btn btn-primary"
 							        @click="showingEditTaskModal = false; updateTask()">Update
 							</button>
-							<button v-else-if="dateIsChanged"
-							        class="btn btn-primary"
+							<button v-else-if="dateIsChanged" class="btn btn-primary"
 							        @click="showingEditTaskModal = false; updateTask()">Update
 							</button>
-							<button v-else
-							        class="btn btn-default">Update
-							</button>
+							<button v-else class="btn btn-default">Update</button>
 						</div>
 					</div>
 				</div>
@@ -217,26 +188,22 @@
 						<button class="fright close" @click="showingDeleteTaskModal = false;">x</button>
 						<div class="clear"></div>
 					</div>
-					<div class="deleteTaskModalContent">
-						<p class="center">You will delete this task:</p>
+					<div class="center deleteTaskModalContent">
+						<p>You will delete this task:</p>
 						<h3>{{clickedTask.texttask}}</h3><br>
-						<p class="fleft">Are you sure?</p>
+						<p>Are you sure?</p>
 						<button class="btn btn-primary" @click="showingDeleteTaskModal = false; deleteTask()">Delete</button>
 					</div>
 				</div>
-			</div>
-			<!--   end modal blocks for TASKs actions -->
-		</div>
-		<table class="todolist" v-for="todo in todos" id="sortable" v-on:change="setOrderId();">
+			</div> <!--   end modal blocks for TASKs actions --> </div>
+		<table class="todolist" v-for="todo in todos">
 			<thead>
 			<tr class="todoheading">
 				<td>
 					<i class="fa fa-calendar" aria-hidden="true"></i>
 				</td>
 				<td></td>
-				<td>
-					<h2 class="fleft white">{{todo.todoname}}</h2>
-				</td>
+				<td><h2 class="fleft white">{{todo.todoname}}</h2></td>
 				<td>
 					<p class="fright gray">
 						<i class="fa fa-pencil" aria-hidden="true" @click="showingEditTodoModal = true; selectTodo(todo)"></i>
@@ -251,39 +218,28 @@
 				</td>
 				<td></td>
 				<td>
-					<input v-on:keyup="validateTextTask('new');"
-					       v-on:keyup.enter="selectTodo(todo); validateTextTask('add');"
-					       v-model="thisTask.texttask" class="fright thisTaskName" id="thisTaskName" type="text"
+					<input v-on:keyup="validateTextTask('new');" v-on:keyup.enter="selectTodo(todo); validateTextTask('add');"
+					       v-model="thisTask.texttask" class="fright thisTaskName" type="text"
 					       placeholder="Type here to create a task (min 3 symbols)">
 				</td>
 				<td>
 					<button v-if="textIsValidated" class="fleft white addTask"
 					        @click="showingTaskModal = true; selectTodo(todo);">Add task
 					</button>
-					<button v-else class="fleft white notAddTask">Add task
-					</button>
-
+					<button v-else class="fleft white notAddTask">Add task</button>
 				</td>
 			</tr>
 			</thead>
 			<tbody>
-			<tr v-for="(task, key, index) in tasks" :key="task.order_id"
-			    v-bind:id="task.id"
-			    v-if="todo.id==task.todoid"
-			    v-bind:class="{ completed: task.iscomplete == 1 }"
-			    class="todolistitem">
-
+			<tr v-for="(task, key, index) in tasks" :key="task.order_id" v-bind:id="task.id"
+			    v-bind:data-orderid="task.order_id"
+			    v-if="todo.id==task.todoid" v-bind:class="{ completed: task.iscomplete == 1 }" class="todolistitem">
 				<td v-if="task.iscomplete == 1" class="drag center">
-					<input type="checkbox" checked
-					       v-on:change="selectTask(task)"
-					       v-on:click="selectTask(task);completedTask()">
+					<input type="checkbox" checked v-on:click="completedTask(task.id, task.iscomplete); task.iscomplete = 0;">
 				</td>
 				<td v-else class="center" class="drag">
-					<input type="checkbox"
-					       v-on:change="selectTask(task)"
-					       v-on:click="selectTask(task);completedTask()">
+					<input type="checkbox" v-on:click="completedTask(task.id, task.iscomplete); task.iscomplete = 1;">
 				</td>
-
 				<td class="lines"></td>
 				<td class="drag">
 					<p>{{task.texttask}}</p>
@@ -307,11 +263,9 @@
 			</button>
 		</div>
 	</div>
-
 	<div class="hide">{{addonsON=true}}</div>
 </div>
 </body>
-
 <script src="./jquery-1.12.4.min.js"></script>
 <script src="./jquery.tablednd.0.8.min.js"></script>
 <script src="./axios.min.js"></script>
